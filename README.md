@@ -225,14 +225,14 @@
  │  - Responsive (móvil, tablet, escritorio)               │
  │  - Accesibilidad básica                                 │
  └────────────────────────┬────────────────────────────────┘
-													│ HTTP/REST
+						  │ HTTP/REST
  ┌────────────────────────▼────────────────────────────────┐
  │  Capa de API REST                                       │
  │  - Controladores por módulo funcional                   │
  │  - Enrutamiento y validación de solicitudes             │
  │  - Manejo centralizado de errores                       │
  └────────────────────────┬────────────────────────────────┘
-													│
+						  │
  ┌────────────────────────▼────────────────────────────────┐
  │  Capa de Aplicación (CQS)                               │
  │  - Coordinación de casos de uso                         │
@@ -240,7 +240,7 @@
  │  - Query Handlers (solo lectura)                        │
  │  - Orquestación de eventos                              │
  └────────────────────────┬────────────────────────────────┘
-													│
+						  │
  ┌────────────────────────▼────────────────────────────────┐
  │  Capa de Dominio                                        │
  │  - Entidades de negocio                                 │
@@ -248,7 +248,7 @@
  │  - Lógica de disponibilidad y reservas                  │
  │  - Domain Events                                        │
  └────────────────────────┬────────────────────────────────┘
-													│
+						  │
  ┌────────────────────────▼────────────────────────────────┐
  │  Capa de Persistencia                                   │
  │  - Repositorios especializados                          │
@@ -256,7 +256,7 @@
  │  - Mapeo objeto-relacional                              │
  │  - Transaccionalidad y concurrencia                     │
  └────────────────────────┬────────────────────────────────┘
-													│
+						  │
  ┌────────────────────────▼────────────────────────────────┐
  │  Base de Datos (PostgreSQL)                             │
  │  - 40+ tablas relacionadas                              │
@@ -355,7 +355,6 @@
  
  ```
  entregables/
- ├── Biblio_ERD_relaciones_rectangulos.svg    (Modelo de referencia)
  ├── entregable1/
  │   ├── Análisis y Diseño de Casos de Uso.pdf
  │   ├── Diseño de Arquitectura.docx
