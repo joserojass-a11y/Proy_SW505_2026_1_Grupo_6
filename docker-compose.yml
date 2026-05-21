@@ -1,0 +1,44 @@
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: booking_db_prod
+    restart: always
+    environment:
+      POSTGRES_USER: ${DB_USER:-uni_admin}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-UniSecurePass2026}
+      POSTGRES_DB: ${DB_NAME:-booking_system}
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  backend:
+    build:
+      context: ./src/backend
+      dockerfile: Dockerfile
+    container_name: booking_backend_api
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      - DATABASE_URL=postgres://${DB_USER:-uni_admin}:${DB_PASSWORD:-UniSecurePass2026}@db:5432/${DB_NAME:-booking_system}
+      - JWT_SECRET=${JWT_SECRET:-64_char_super_secret_key_sw505_grupo6_key_token}
+      - JWT_EXPIRES_IN=${JWT_EXPIRES_IN:-15m}
+      - PORT=3000
+      - CORS_ORIGINS=${CORS_ORIGINS:-http://localhost}
+    depends_on:
+      - db
+
+  frontend:
+    build:
+      context: ./src/frontend
+      dockerfile: Dockerfile
+    container_name: booking_frontend_spa
+    restart: always
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+
+volumes:
+  pgdata:
