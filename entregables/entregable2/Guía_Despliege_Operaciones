@@ -1,0 +1,151 @@
+# 🚀 Guía de Despliegue y Operaciones: Sistema de Reservas UNI_SW505_Grupo_6
+
+**Propósito del Documento:** Establecer los estándares operativos, de infraestructura y de despliegue para garantizar la alta disponibilidad (99.5% uptime) y la integridad transaccional del Sistema de Gestión de Reservas, basado en una arquitectura modular CQS.
+
+---
+
+## 1. Arquitectura y Stack Tecnológico Base
+
+El sistema está diseñado bajo una arquitectura modular en capas estricta, separando operaciones de lectura (Queries) y escritura (Commands).
+
+* **Presentación:** React SPA (Single Page Application).
+* **API / Lógica de Negocio:** Node.js con Express.
+* **Persistencia:** PostgreSQL v14+ (Tipos de datos requeridos: `UUID v4`, `JSONB`, `TIMESTAMPTZ`, `INET`).
+* **Asincronía / Background Jobs:** Gestor de colas (ej. BullMQ o RabbitMQ) para encolar notificaciones (Dominio 6) y webhooks (Dominio 7).
+
+---
+
+## 2. Gestión de Entornos
+
+Para proteger los datos reales y asegurar un ciclo de pruebas seguro, la infraestructura se divide en tres entornos aislados.
+
+| Entorno | Propósito | Infraestructura y Base de Datos | Reglas de Acceso |
+| --- | --- | --- | --- |
+| **Development (Dev)** | Construcción y depuración diaria. | Servidor local o cloud básico. DB con *seeders* ficticios. | Abierto para todos los desarrolladores. |
+| **Staging (QA)** | Pruebas de integración, simulación de producción y UAT. | Réplica de producción a menor escala. DB aislada (datos anonimizados si son reales). | Pipelines automatizados y QA. Despliegues continuos. |
+| **Production (Prod)** | Entorno real de cara al cliente final. | Cluster de alta disponibilidad, load balancers, DB optimizada. | **Cero acceso manual.** Modificaciones exclusivas vía CI/CD. |
+
+---
+
+## 3. Estandarización y Control de Versiones
+
+Mantener el orden en el código base previene colisiones y facilita la auditoría ante errores críticos.
+
+### 3.1. Nomenclatura de Ramas (GitFlow Simplificado)
+
+* `main`: Código 100% estable. Refleja Producción.
+* `develop`: Código en integración continua. Refleja el entorno de Desarrollo.
+* `feature/<nombre>`: Desarrollo de nuevos requerimientos (ej. `feature/cqs-disponibilidad`).
+* `bugfix/<nombre>`: Corrección de errores detectados en QA/Staging.
+* `hotfix/<nombre>`: Corrección crítica urgente directo a `main` (ej. `hotfix/fuga-memoria-reservas`).
+* `release/v<SemVer>`: Preparación para pase a producción (ej. `release/v1.0.0`).
+
+### 3.2. Nomenclatura de Commits
+
+Utilizar el estándar *Conventional Commits*:
+
+* `feat: [Módulo] Descripción` (Nuevas funcionalidades).
+* `fix: [Módulo] Descripción` (Corrección de errores).
+* `refactor: Descripción` (Mejoras estructurales sin cambios funcionales).
+* `chore: Descripción` (Mantenimiento, actualización de dependencias).
+
+---
+
+## 4. Configuración y Seguridad (Variables de Entorno)
+
+**Regla de Oro:** Ninguna credencial se "hardcodea" en el código. Se inyectan en tiempo de ejecución.
+
+* **Backend (Node.js):** * `DATABASE_URL`: Cadena de conexión estricta a PostgreSQL.
+* `JWT_SECRET`: Clave de encriptación (mínimo 64 caracteres alfanuméricos).
+* `JWT_EXPIRES_IN`: Tiempo de expiración de sesión (ej. `15m` para access token, `7d` para refresh token).
+* `CORS_ORIGINS`: Dominios explícitamente permitidos (ej. `https://reservas.uni.edu.pe`).
+
+
+* **Frontend (React):** * `REACT_APP_API_URL` (o `VITE_API_URL`): Endpoint raíz del backend.
+
+*Nota de Seguridad Operativa:* La tabla `USER_ROLES` debe ser validada obligatoriamente en cada *Command Handler* antes de iniciar transacciones de escritura.
+
+---
+
+## 5. Estrategia de Despliegue y Pase a Producción
+
+El pase a producción (`release` -> `main`) debe ser predecible. Sigue este orden lógico para un despliegue sin tiempo de inactividad (Zero-Downtime).
+
+### Fase 1: Migraciones de Base de Datos (El Paso Crítico)
+
+Las migraciones siempre van primero para soportar el nuevo código.
+
+1. **Backup Previo:** Generar un *snapshot* manual en PostgreSQL antes de ejecutar scripts DDL.
+2. **Orden de Ejecución:** Respetar los dominios: Catálogos primero, luego Entidades Maestras (ej. `TENANTS`, `SERVICES`), y finalmente Transaccionales.
+3. **Retrocompatibilidad:** Si un requerimiento exige eliminar o renombrar columnas, **no lo hagas en un solo pase**. Agrega la nueva columna, despliega el código que escribe en ambas, migra la data histórica y, en el siguiente release, elimina la columna antigua.
+
+### Fase 2: Backend (API REST)
+
+1. Instalación estricta de dependencias: `npm ci --production`.
+2. Ejecución en modo *stateless* a través de un gestor (PM2) o contenedor Docker.
+3. Asegurar que la zona horaria del servidor (y de la DB) esté forzada en **UTC**. Esto es vital para el motor de disponibilidad y las consultas temporales (RF-10).
+
+### Fase 3: Frontend (React SPA)
+
+1. Compilar artefactos estáticos (`npm run build`).
+2. Distribuir a un CDN o servidor web (Nginx), forzando el tráfico por HTTPS.
+3. Invalidar cachés perimetrales para asegurar que los usuarios reciban la versión más reciente del JS/CSS.
+
+---
+
+## 6. Monitoreo y Mantenimiento Diario
+
+El equipo de operaciones debe garantizar la salud del sistema basándose en el análisis de telemetría y logs.
+
+### 6.1. Puntos de Control Críticos
+
+* **Control de Concurrencia:** Vigilar activamente los bloqueos optimistas en la tabla `BOOKING_LOCKS`. Las transacciones huérfanas por timeout deben tener rutinas de limpieza automatizadas (Garbage Collection de locks).
+* **Auditoría de Seguridad:** Monitorear `AUTH_ACCESS_LOGS` para identificar patrones de fuerza bruta o intentos de elevación de privilegios.
+* **Asincronía:** Revisar el tamaño de la cola de la tabla `WEBHOOKS_OUTBOX` y el sistema de mensajería subyacente para evitar retrasos en correos o notificaciones push.
+
+### 6.2. Health Checks
+
+El backend debe exponer un endpoint (ej. `/api/v1/health`) que valide:
+
+1. Conectividad con la base de datos PostgreSQL (ejecutando un simple `SELECT 1`).
+2. Conectividad con el gestor de colas en memoria (Redis/RabbitMQ).
+3. Uso de memoria del proceso de Node.js.
+
+---
+
+## 7. Plan de Recuperación ante Desastres (Disaster Recovery)
+
+Procedimientos para restaurar el servicio en caso de fallos catastróficos.
+
+### 7.1. Estrategia de Backups
+
+* **Dumps Diarios:** Copias completas de la base de datos cada 24h durante horas valle.
+* **Respaldos Transaccionales (WAL):** Habilitar el archivado WAL en PostgreSQL para permitir restauraciones *Point-in-Time* (recuperar el estado exacto hasta el minuto anterior al desastre).
+
+### 7.2. Protocolo de Rollback
+
+Si una nueva versión del backend corrompe la lógica de negocio (ej. falla el cálculo dinámico de *slots*):
+
+1. Utilizar el orquestador (Docker/PM2) para cambiar el puntero de la imagen a la versión estable anterior inmediatamente.
+2. Si la migración de la base de datos es la causante, restaurar desde el snapshot o ejecutar el script *down* de la migración respectiva (asumiendo que se programaron scripts reversibles).
+
+---
+
+## 8. Gestión de Incidentes (Triage)
+
+Clasificación y respuesta ante errores reportados en Producción:
+
+* 🔴 **Severidad P1 (Crítico):** Sistema caído, o fallos masivos en la reserva de citas (`BOOKINGS`).
+* *Acción:* Rollback inmediato o Hotfix en minutos. Todo el equipo disponible apoya.
+
+
+* 🟠 **Severidad P2 (Alto):** Funcionalidad importante degrada (ej. los recordatorios `SERVICE_REMINDERS` no se envían), pero el agendamiento sigue operativo.
+* *Acción:* Priorización máxima para un Bugfix en el entorno de Staging, pruebas rápidas y pase a producción en menos de 24 horas.
+
+
+* 🟡 **Severidad P3 (Bajo):** Errores visuales menores, reportes lentos en módulos administrativos.
+* *Acción:* Se documenta en el backlog y se agenda para el próximo Sprint regular.
+
+
+
+*Todo incidente P1 debe culminar con un documento Post-Mortem analizando la raíz del fallo y las medidas preventivas (nuevos tests o refactorización) que se implementarán en la arquitectura CQS.*
