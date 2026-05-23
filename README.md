@@ -3,6 +3,10 @@
  **UNI - FIIS - Construcción de Software 1**  
  **Semestre:** 2026-1  
  **Grupo:** 6
+ 	- Rojas Sanchez, Jose Martin
+	- Muñoz Bolaños, Pablo Antonio
+	- Saldaña Matamoros, Axel Paul
+	- Gomez Feliz, Marco Sebastian
  
  ---
 
