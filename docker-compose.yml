@@ -1,44 +1,66 @@
+version: '3.9'
+
 services:
-  db:
+  postgres:
     image: postgres:15-alpine
-    container_name: booking_db_prod
-    restart: always
+    container_name: uni_booking_db
     environment:
-      POSTGRES_USER: ${DB_USER:-uni_admin}
-      POSTGRES_PASSWORD: ${DB_PASSWORD:-UniSecurePass2026}
-      POSTGRES_DB: ${DB_NAME:-booking_system}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
     ports:
       - "5432:5432"
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
 
-  backend:
-    build:
+  redis:
+    image: redis:7-alpine
+    container_name: uni_booking_redis
+    command: redis-server --requirepass ${REDIS_PASSWORD} --appendonly yes
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "--pass", "${REDIS_PASSWORD}", "ping"]
+      interval: 10s
+    restart: unless-stopped
+
+  api:
+    build: 
       context: ./src/backend
-      dockerfile: Dockerfile
-    container_name: booking_backend_api
-    restart: always
+    container_name: uni_booking_api
     ports:
       - "3000:3000"
     environment:
-      - DATABASE_URL=postgres://${DB_USER:-uni_admin}:${DB_PASSWORD:-UniSecurePass2026}@db:5432/${DB_NAME:-booking_system}
-      - JWT_SECRET=${JWT_SECRET:-64_char_super_secret_key_sw505_grupo6_key_token}
-      - JWT_EXPIRES_IN=${JWT_EXPIRES_IN:-15m}
-      - PORT=3000
-      - CORS_ORIGINS=${CORS_ORIGINS:-http://localhost}
+      - NODE_ENV=${NODE_ENV}
+      - DATABASE_URL=${DATABASE_URL}
+      - REDIS_URL=${REDIS_URL}
+      - JWT_SECRET=${JWT_SECRET}
+      - CORS_ORIGINS=${CORS_ORIGINS}
     depends_on:
-      - db
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
 
   frontend:
     build:
       context: ./src/frontend
-      dockerfile: Dockerfile
-    container_name: booking_frontend_spa
-    restart: always
+    container_name: uni_booking_spa
     ports:
       - "80:80"
     depends_on:
-      - backend
+      - api
+    restart: unless-stopped
 
 volumes:
-  pgdata:
+  postgres-data:
+  redis-data:

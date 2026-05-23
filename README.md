@@ -5,7 +5,19 @@
  **Grupo:** 6
  
  ---
- 
+
+## 🚀 Guía rápida para probar el proyecto con Docker
+
+Si eres nuevo en el proyecto, esta es la forma más rápida de levantar el entorno local:
+
+1. Asegúrate de tener instalado Docker y Docker Compose.
+2. Verifica que exista un archivo `.env` en la raíz del proyecto. Si no lo tienes, puedes partir de `.env.example` y ajustar los valores locales.
+3. Desde la carpeta raíz ejecuta `docker compose up -d --build`.
+4. Cuando termine el arranque, abre el frontend en `http://localhost` y la API en `http://localhost:3000`.
+5. Para detener todo el entorno usa `docker compose down`.
+
+Si algo no responde al inicio, revisa primero que los contenedores `postgres`, `redis`, `api` y `frontend` estén activos. 
+
  ## 📋 Resumen Ejecutivo
  
  Sistema integral de gestión de reservas de servicios para negocios (clínicas, salones, talleres, tutorías). Proporciona agendamiento de citas, gestión de disponibilidad, notificaciones automatizadas, control de acceso basado en roles y auditoría completa. Arquitectura modular basada en capas, implementando el principio **CQS (Command Query Separation)**.

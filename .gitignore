@@ -1,2 +1,57 @@
+# ===================================================
+# Plataforma de Reservas UNI - .gitignore Global
+# ===================================================
+
+# 1. Dependencias de Node.js (Frontend y Backend)
+node_modules/
+.pnp
+.pnp.js
+
+# 2. Variables de Entorno y Secretos (CRÍTICO)
 .env
-.env.*
+.env.*.local
+*.pem
+secrets/
+
+# 3. Artefactos de Compilación y Builds (React/Vite)
+frontend/dist/
+frontend/build/
+frontend-build/
+
+# 4. Logs de depuración
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+logs/
+*.log
+
+# 5. Testing y Cobertura (Jest / Vitest)
+coverage/
+.nyc_output/
+.eslintcache
+
+# 6. Datos Locales y Backups de Infraestructura (Docker)
+backups/
+postgres-data/
+redis-data/
+*.sql
+*.sql.gz
+dump.rdb
+
+# 7. Archivos del Sistema Operativo
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# 8. Configuración de Editores e IDEs
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
