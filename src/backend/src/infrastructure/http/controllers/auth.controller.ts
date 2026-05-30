@@ -13,12 +13,19 @@ export class AuthController {
 
   @Post('register')
   async register(@Body() body: RegisterUserDto) {
-    return this.registerUserCommandHandler.execute(body);
+    return this.registerUserCommandHandler.execute({
+      email: body.email,
+      password: body.password,
+      fullName: body.fullName,
+    });
   }
 
   @Post('login')
   async login(@Body() body: LoginDto) {
-    return this.loginCommandHandler.execute(body);
+    return this.loginCommandHandler.execute({
+      email: body.email,
+      password: body.password,
+    });
   }
 
   @Post('logout')
