@@ -4,7 +4,7 @@ import { RegisterUserCommandHandler } from '../../../application/commands/regist
 import { LoginDto } from '../../../application/dtos/login.dto';
 import { RegisterUserDto } from '../../../application/dtos/register-user.dto';
 
-@Controller('api/auth')
+@Controller('auth')
 export class AuthController {
   constructor(
     private readonly registerUserCommandHandler: RegisterUserCommandHandler,

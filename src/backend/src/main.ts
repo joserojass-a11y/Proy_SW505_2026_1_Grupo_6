@@ -20,6 +20,8 @@ async function bootstrap(): Promise<void> {
     cors: true,
   });
 
+  app.setGlobalPrefix('api');
+
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,

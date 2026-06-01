@@ -1,32 +1,27 @@
-# Etapa 1: Builder
+# Etapa 1: Builder (instala devDependencies y compila TypeScript)
 FROM node:20-alpine AS builder
 WORKDIR /app
 COPY package*.json ./
-RUN npm ci --omit=dev && npm cache clean --force
+RUN npm ci && npm cache clean --force
 COPY . .
-# Simulación del build step si usas TypeScript o un bundler
-# RUN npm run build 
+RUN npm run build
 
-# Etapa 2: Producción
+# Etapa 2: Producción (solo dependencias de producción + artefactos compilados)
 FROM node:20-alpine AS production
 RUN addgroup -g 1001 -S nodejs && adduser -S nodejs -u 1001
 WORKDIR /app
 
-# Copiar artefactos y dependencias de producción
-COPY --from=builder --chown=nodejs:nodejs /app/node_modules ./node_modules
-COPY --from=builder --chown=nodejs:nodejs /app/package.json ./
-# Cuando tengas la compilación de TS lista, descomenta la siguiente línea:
-# COPY --from=builder --chown=nodejs:nodejs /app/dist ./dist 
+# Copiar package.json para instalar solo dependencias de producción
+COPY package*.json ./
+RUN npm ci --omit=dev && npm cache clean --force
 
-# Para Fase 0 copiamos el código crudo (Temporal hasta usar TypeScript)
-COPY --from=builder --chown=nodejs:nodejs /app/src ./src
-COPY --from=builder --chown=nodejs:nodejs /app/server.js ./
+# Copiar los artefactos compilados desde el builder
+COPY --from=builder --chown=nodejs:nodejs /app/dist ./dist
 
 USER nodejs
 EXPOSE 3000
 
 HEALTHCHECK --interval=30s --timeout=10s --retries=3 \
-  CMD curl -f http://localhost:3000/api/health || exit 1
+  CMD wget -qO- http://localhost:3000/api/health || exit 1
 
-# Cambiar a dist/main.js en el futuro
-CMD ["node", "server.js"]
+CMD ["node", "dist/main.js"]
