@@ -2,6 +2,7 @@ import { Provider } from '@nestjs/common';
 import { DataSource, DataSourceOptions } from 'typeorm';
 import { INFRASTRUCTURE_TOKENS } from './infrastructure.tokens';
 import { TypeOrmUserEntitySchema } from '../persistence/typeorm/entities/typeorm-user.entity';
+import { InitialUsersTableMigration1680000000000 } from '../persistence/typeorm/migrations/1680000000000-InitialUsersTable';
 
 function buildDataSourceOptions(): DataSourceOptions {
   const databaseUrl = process.env.DATABASE_URL;
@@ -16,6 +17,8 @@ function buildDataSourceOptions(): DataSourceOptions {
       type: 'postgres',
       url: databaseUrl,
       entities: [TypeOrmUserEntitySchema],
+      migrations: [InitialUsersTableMigration1680000000000],
+      migrationsRun: true,
       synchronize: false,
       logging: process.env.TYPEORM_LOGGING === 'true',
     };
@@ -35,6 +38,8 @@ function buildDataSourceOptions(): DataSourceOptions {
     password,
     database,
     entities: [TypeOrmUserEntitySchema],
+    migrations: [InitialUsersTableMigration1680000000000],
+    migrationsRun: true,
     synchronize: false,
     logging: process.env.TYPEORM_LOGGING === 'true',
   };
