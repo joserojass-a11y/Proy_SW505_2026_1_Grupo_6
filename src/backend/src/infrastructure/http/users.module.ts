@@ -3,12 +3,12 @@ import { DataSource } from 'typeorm';
 import { GetUserProfileQueryHandler } from '../../application/queries/get-user-profile.query-handler';
 import { UpdateProfileCommandHandler } from '../../application/commands/update-profile.command-handler';
 import { INFRASTRUCTURE_TOKENS } from '../shared/infrastructure.tokens';
-import { typeormDataSourceProvider } from '../shared/typeorm.datasource.provider';
 import { TypeOrmUserRepository } from '../persistence/typeorm/typeorm-user.repository';
 import { ProfileController } from './controllers/profile.controller';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { RolesGuard } from './guards/roles.guard';
 import { Reflector } from '@nestjs/core';
+import { DatabaseModule } from '../shared/database.module';
 
 const userRepositoryProvider: Provider = {
   provide: INFRASTRUCTURE_TOKENS.USER_REPOSITORY,
@@ -29,9 +29,9 @@ const getUserProfileHandlerProvider: Provider = {
 };
 
 @Module({
+  imports: [DatabaseModule],
   controllers: [ProfileController],
   providers: [
-    typeormDataSourceProvider,
     userRepositoryProvider,
     updateProfileHandlerProvider,
     getUserProfileHandlerProvider,
@@ -40,7 +40,6 @@ const getUserProfileHandlerProvider: Provider = {
     Reflector,
   ],
   exports: [
-    INFRASTRUCTURE_TOKENS.DATA_SOURCE,
     INFRASTRUCTURE_TOKENS.USER_REPOSITORY,
     UpdateProfileCommandHandler,
     GetUserProfileQueryHandler,

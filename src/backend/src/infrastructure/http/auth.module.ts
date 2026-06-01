@@ -1,6 +1,7 @@
 import { Module, Provider } from '@nestjs/common';
 import { LoginCommandHandler } from '../../application/commands/login.command-handler';
 import { RegisterUserCommandHandler } from '../../application/commands/register-user.command-handler';
+import { RegisterOwnerCommandHandler } from '../../application/commands/register-owner.command-handler';
 import { INFRASTRUCTURE_TOKENS } from '../shared/infrastructure.tokens';
 import { UsersModule } from './users.module';
 import { BcryptPasswordHasherService } from './services/bcrypt-password-hasher.service';
@@ -25,6 +26,13 @@ const registerUserHandlerProvider: Provider = {
   inject: [INFRASTRUCTURE_TOKENS.USER_REPOSITORY, INFRASTRUCTURE_TOKENS.PASSWORD_HASHER],
 };
 
+const registerOwnerHandlerProvider: Provider = {
+  provide: RegisterOwnerCommandHandler,
+  useFactory: (userRepository: TypeOrmUserRepository, passwordHasher: BcryptPasswordHasherService) =>
+    new RegisterOwnerCommandHandler(userRepository, passwordHasher),
+  inject: [INFRASTRUCTURE_TOKENS.USER_REPOSITORY, INFRASTRUCTURE_TOKENS.PASSWORD_HASHER],
+};
+
 const loginHandlerProvider: Provider = {
   provide: LoginCommandHandler,
   useFactory: (
@@ -38,7 +46,19 @@ const loginHandlerProvider: Provider = {
 @Module({
   imports: [UsersModule],
   controllers: [AuthController],
-  providers: [passwordHasherProvider, jwtTokenGeneratorProvider, registerUserHandlerProvider, loginHandlerProvider],
-  exports: [INFRASTRUCTURE_TOKENS.PASSWORD_HASHER, INFRASTRUCTURE_TOKENS.JWT_TOKEN_GENERATOR, RegisterUserCommandHandler, LoginCommandHandler],
+  providers: [
+    passwordHasherProvider,
+    jwtTokenGeneratorProvider,
+    registerUserHandlerProvider,
+    registerOwnerHandlerProvider,
+    loginHandlerProvider,
+  ],
+  exports: [
+    INFRASTRUCTURE_TOKENS.PASSWORD_HASHER,
+    INFRASTRUCTURE_TOKENS.JWT_TOKEN_GENERATOR,
+    RegisterUserCommandHandler,
+    RegisterOwnerCommandHandler,
+    LoginCommandHandler,
+  ],
 })
 export class AuthModule {}

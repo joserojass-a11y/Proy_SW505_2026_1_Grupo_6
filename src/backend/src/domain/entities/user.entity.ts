@@ -11,7 +11,7 @@ export interface UserPrimitives {
   email: string;
   passwordHash: string;
   fullName: string;
-  role: 'CLIENT' | 'ADMIN';
+  role: 'CLIENT' | 'ADMIN' | 'OWNER';
   status: 'PENDING' | 'ACTIVE' | 'BLOCKED';
   createdAt: Date;
   updatedAt: Date;
@@ -22,7 +22,7 @@ export interface CreateUserProps {
   email: Email | string;
   passwordHash: PasswordHash | string;
   fullName: FullName | string;
-  role?: UserRole | 'CLIENT' | 'ADMIN';
+  role?: UserRole | 'CLIENT' | 'ADMIN' | 'OWNER';
   status?: UserStatus | 'PENDING' | 'ACTIVE' | 'BLOCKED';
   createdAt?: Date;
   updatedAt?: Date;
@@ -33,7 +33,7 @@ export interface ReconstituteUserProps {
   email: Email | string;
   passwordHash: PasswordHash | string;
   fullName: FullName | string;
-  role: UserRole | 'CLIENT' | 'ADMIN';
+  role: UserRole | 'CLIENT' | 'ADMIN' | 'OWNER';
   status: UserStatus | 'PENDING' | 'ACTIVE' | 'BLOCKED';
   createdAt: Date;
   updatedAt: Date;
@@ -126,7 +126,7 @@ export class User {
     this.touch();
   }
 
-  assignRole(role: UserRole | 'CLIENT' | 'ADMIN'): void {
+  assignRole(role: UserRole | 'CLIENT' | 'ADMIN' | 'OWNER'): void {
     this._role = User.toUserRole(role);
     this.touch();
   }
@@ -198,7 +198,7 @@ export class User {
     return value instanceof FullName ? value : FullName.create(value);
   }
 
-  private static toUserRole(value: UserRole | 'CLIENT' | 'ADMIN'): UserRole {
+  private static toUserRole(value: UserRole | 'CLIENT' | 'ADMIN' | 'OWNER'): UserRole {
     return value instanceof UserRole ? value : UserRole.create(value);
   }
 

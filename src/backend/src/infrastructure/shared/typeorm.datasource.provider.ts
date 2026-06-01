@@ -2,7 +2,9 @@ import { Provider } from '@nestjs/common';
 import { DataSource, DataSourceOptions } from 'typeorm';
 import { INFRASTRUCTURE_TOKENS } from './infrastructure.tokens';
 import { TypeOrmUserEntitySchema } from '../persistence/typeorm/entities/typeorm-user.entity';
-import { InitialUsersTableMigration1680000000000 } from '../persistence/typeorm/migrations/1680000000000-InitialUsersTable';
+import { TypeOrmTenantEntitySchema } from '../persistence/typeorm/entities/typeorm-tenant.entity';
+import { TypeOrmTenantBillingProfileEntitySchema } from '../persistence/typeorm/entities/typeorm-tenant-billing-profile.entity';
+import { TypeOrmCustomerEntitySchema } from '../persistence/typeorm/entities/typeorm-customer.entity';
 
 function buildDataSourceOptions(): DataSourceOptions {
   const databaseUrl = process.env.DATABASE_URL;
@@ -16,8 +18,8 @@ function buildDataSourceOptions(): DataSourceOptions {
     return {
       type: 'postgres',
       url: databaseUrl,
-      entities: [TypeOrmUserEntitySchema],
-      migrations: [InitialUsersTableMigration1680000000000],
+      entities: [TypeOrmUserEntitySchema, TypeOrmTenantEntitySchema, TypeOrmTenantBillingProfileEntitySchema, TypeOrmCustomerEntitySchema],
+      migrations: [__dirname + '/persistence/typeorm/migrations/*.{ts,js}'],
       migrationsRun: true,
       synchronize: false,
       logging: process.env.TYPEORM_LOGGING === 'true',
@@ -37,18 +39,25 @@ function buildDataSourceOptions(): DataSourceOptions {
     username,
     password,
     database,
-    entities: [TypeOrmUserEntitySchema],
-    migrations: [InitialUsersTableMigration1680000000000],
+    entities: [TypeOrmUserEntitySchema, TypeOrmTenantEntitySchema, TypeOrmTenantBillingProfileEntitySchema, TypeOrmCustomerEntitySchema],
+    migrations: [__dirname + '/persistence/typeorm/migrations/*.{ts,js}'],
     migrationsRun: true,
     synchronize: false,
     logging: process.env.TYPEORM_LOGGING === 'true',
   };
 }
 
+let dataSourceInitializationPromise: Promise<DataSource> | null = null;
+
 export const typeormDataSourceProvider: Provider = {
   provide: INFRASTRUCTURE_TOKENS.DATA_SOURCE,
   useFactory: async (): Promise<DataSource> => {
     const dataSource = new DataSource(buildDataSourceOptions());
-    return dataSource.isInitialized ? dataSource : dataSource.initialize();
+    if (dataSource.isInitialized) {
+      return dataSource;
+    }
+
+    dataSourceInitializationPromise ??= dataSource.initialize();
+    return dataSourceInitializationPromise;
   },
 };

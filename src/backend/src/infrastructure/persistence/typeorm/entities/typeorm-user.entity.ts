@@ -5,7 +5,7 @@ export interface TypeOrmUserProps {
   email: string;
   passwordHash: string;
   fullName: string;
-  role: 'CLIENT' | 'ADMIN';
+  role: 'CLIENT' | 'ADMIN' | 'OWNER';
   status: 'PENDING' | 'ACTIVE' | 'BLOCKED';
   createdAt: Date;
   updatedAt: Date;
@@ -16,7 +16,7 @@ export class TypeOrmUserEntity implements TypeOrmUserProps {
   email!: string;
   passwordHash!: string;
   fullName!: string;
-  role!: 'CLIENT' | 'ADMIN';
+  role!: 'CLIENT' | 'ADMIN' | 'OWNER';
   status!: 'PENDING' | 'ACTIVE' | 'BLOCKED';
   createdAt!: Date;
   updatedAt!: Date;

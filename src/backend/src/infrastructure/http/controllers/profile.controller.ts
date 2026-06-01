@@ -9,7 +9,7 @@ import { CurrentUserId } from '../decorators';
 
 @Controller('profile')
 @UseGuards(JwtAuthGuard, RolesGuard)
-@Roles('CLIENT', 'ADMIN')
+@Roles('CLIENT', 'ADMIN', 'OWNER')
 export class ProfileController {
   constructor(
     private readonly getUserProfileQueryHandler: GetUserProfileQueryHandler,
