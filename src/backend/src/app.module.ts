@@ -6,6 +6,7 @@ import { UsersModule } from './infrastructure/http/users.module';
 import { HealthModule } from './infrastructure/http/health.module';
 import { DatabaseModule } from './infrastructure/shared/database.module';
 import { AvailabilityModule } from './infrastructure/http/availability.module';
+import { BookingModule } from './infrastructure/http/booking.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { AvailabilityModule } from './infrastructure/http/availability.module';
     CustomersModule,
     HealthModule,
     AvailabilityModule,
+    BookingModule,
   ],
 })
 export class AppModule {}
