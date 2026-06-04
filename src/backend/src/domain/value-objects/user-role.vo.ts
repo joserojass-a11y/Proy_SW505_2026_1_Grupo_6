@@ -1,12 +1,12 @@
 import { InvalidUserRoleException } from '../exceptions/invalid-user-role.exception';
 
-export type UserRoleValue = 'CLIENT' | 'ADMIN';
+export type UserRoleValue = 'CLIENT' | 'ADMIN' | 'OWNER';
 
 export class UserRole {
   private constructor(private readonly _value: UserRoleValue) {}
 
   static create(value: UserRoleValue | string): UserRole {
-    if (value === 'CLIENT' || value === 'ADMIN') {
+    if (value === 'CLIENT' || value === 'ADMIN' || value === 'OWNER') {
       return new UserRole(value);
     }
 
@@ -21,6 +21,10 @@ export class UserRole {
     return new UserRole('ADMIN');
   }
 
+  static owner(): UserRole {
+    return new UserRole('OWNER');
+  }
+
   get value(): UserRoleValue {
     return this._value;
   }
@@ -31,6 +35,10 @@ export class UserRole {
 
   isAdmin(): boolean {
     return this._value === 'ADMIN';
+  }
+
+  isOwner(): boolean {
+    return this._value === 'OWNER';
   }
 
   equals(other: UserRole): boolean {

@@ -3,6 +3,9 @@ import { config as loadEnv } from 'dotenv';
 import { existsSync } from 'fs';
 import { resolve } from 'path';
 import { DataSource } from 'typeorm';
+import { TypeOrmTenantEntitySchema } from '../persistence/typeorm/entities/typeorm-tenant.entity';
+import { TypeOrmTenantBillingProfileEntitySchema } from '../persistence/typeorm/entities/typeorm-tenant-billing-profile.entity';
+import { TypeOrmCustomerEntitySchema } from '../persistence/typeorm/entities/typeorm-customer.entity';
 import { TypeOrmUserEntitySchema } from '../persistence/typeorm/entities/typeorm-user.entity';
 
 const backendEnvPath = resolve(process.cwd(), '.env');
@@ -30,7 +33,7 @@ if (!databaseUrl && (!host || !username || typeof password !== 'string' || passw
 export const AppDataSource = new DataSource({
   type: 'postgres',
   ...(databaseUrl ? { url: databaseUrl } : { host, port, username, password, database }),
-  entities: [TypeOrmUserEntitySchema],
+  entities: [TypeOrmUserEntitySchema, TypeOrmTenantEntitySchema, TypeOrmTenantBillingProfileEntitySchema, TypeOrmCustomerEntitySchema],
   migrations: [resolve(__dirname, '../persistence/typeorm/migrations/*.{ts,js}')],
   synchronize: false,
   logging: process.env.TYPEORM_LOGGING === 'true',

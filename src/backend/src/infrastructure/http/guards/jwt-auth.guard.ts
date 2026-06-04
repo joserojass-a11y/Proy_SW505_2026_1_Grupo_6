@@ -7,7 +7,7 @@ type AuthenticatedRequest = Request & {
   user?: {
     sub?: string;
     email?: string;
-    role?: 'CLIENT' | 'ADMIN';
+    role?: 'CLIENT' | 'ADMIN' | 'OWNER';
     iat?: number;
     exp?: number;
   };

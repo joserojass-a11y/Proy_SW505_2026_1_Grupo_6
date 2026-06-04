@@ -5,6 +5,8 @@ import { resolve } from 'path';
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
+import { INFRASTRUCTURE_TOKENS } from './infrastructure/shared/infrastructure.tokens';
+import { TenantResolutionMiddleware } from './infrastructure/http/middlewares/tenant-resolution.middleware';
 
 const backendEnvPath = resolve(process.cwd(), '.env');
 const workspaceEnvPath = resolve(process.cwd(), '..', '..', '.env');
@@ -19,6 +21,12 @@ async function bootstrap(): Promise<void> {
   const app = await NestFactory.create(AppModule, {
     cors: true,
   });
+  
+  const dataSource = app.get(INFRASTRUCTURE_TOKENS.DATA_SOURCE);
+  const tenantResolutionMiddleware = new TenantResolutionMiddleware(dataSource);
+  app.use(tenantResolutionMiddleware.use.bind(tenantResolutionMiddleware));
+
+  app.setGlobalPrefix('api');
 
   app.useGlobalPipes(
     new ValidationPipe({

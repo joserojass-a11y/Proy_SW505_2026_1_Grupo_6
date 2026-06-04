@@ -7,9 +7,9 @@ import { RolesGuard } from '../guards/roles.guard';
 import { Roles } from '../decorators/roles.decorator';
 import { CurrentUserId } from '../decorators';
 
-@Controller('api/profile')
+@Controller('profile')
 @UseGuards(JwtAuthGuard, RolesGuard)
-@Roles('CLIENT', 'ADMIN')
+@Roles('CLIENT', 'ADMIN', 'OWNER')
 export class ProfileController {
   constructor(
     private readonly getUserProfileQueryHandler: GetUserProfileQueryHandler,
