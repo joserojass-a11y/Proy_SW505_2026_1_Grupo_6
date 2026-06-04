@@ -1,5 +1,6 @@
 import { Provider } from '@nestjs/common';
 import { DataSource, DataSourceOptions } from 'typeorm';
+import { existsSync } from 'fs';
 import { INFRASTRUCTURE_TOKENS } from './infrastructure.tokens';
 import { TypeOrmUserEntitySchema } from '../persistence/typeorm/entities/typeorm-user.entity';
 import { TypeOrmTenantEntitySchema } from '../persistence/typeorm/entities/typeorm-tenant.entity';
@@ -7,8 +8,29 @@ import { TypeOrmTenantBillingProfileEntitySchema } from '../persistence/typeorm/
 import { TypeOrmCustomerEntitySchema } from '../persistence/typeorm/entities/typeorm-customer.entity';
 
 function buildDataSourceOptions(): DataSourceOptions {
-  const databaseUrl = process.env.DATABASE_URL;
-  const host = process.env.DB_HOST;
+  const isDocker = existsSync('/.dockerenv') || process.env.IS_DOCKER === 'true';
+  const isLocal = !isDocker || process.platform === 'win32';
+
+  let databaseUrl = process.env.DATABASE_URL;
+  if (isLocal && databaseUrl) {
+    try {
+      const parsedUrl = new URL(databaseUrl);
+      if (parsedUrl.hostname === 'postgres') {
+        parsedUrl.hostname = 'localhost';
+        databaseUrl = parsedUrl.toString();
+      }
+    } catch (err) {
+      if (databaseUrl.includes('@postgres:')) {
+        databaseUrl = databaseUrl.replace('@postgres:', '@localhost:');
+      }
+    }
+  }
+
+  let host = process.env.DB_HOST;
+  if (isLocal && host === 'postgres') {
+    host = 'localhost';
+  }
+
   const username = process.env.DB_USER;
   const password = process.env.DB_PASSWORD;
   const database = process.env.DB_NAME;
