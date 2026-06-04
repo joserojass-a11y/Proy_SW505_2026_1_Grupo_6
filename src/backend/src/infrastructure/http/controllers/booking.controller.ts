@@ -1,14 +1,15 @@
-import { Body, Controller, Get, Param, Post, Query, UseGuards } from '@nestjs/common';
-import { CreateBookingCommandHandler } from '../../application/commands/create-booking.command-handler';
-import { CancelBookingCommandHandler } from '../../application/commands/cancel-booking.command-handler';
-import { RescheduleBookingCommandHandler } from '../../application/commands/reschedule-booking.command-handler';
-import { GetBookingQueryHandler } from '../../application/queries/get-booking.query-handler';
-import { ListBookingsQueryHandler } from '../../application/queries/list-bookings.query-handler';
-import { CreateBookingRequestDto } from '../../application/dtos/create-booking-request.dto';
-import { CancelBookingRequestDto } from '../../application/dtos/cancel-booking-request.dto';
-import { RescheduleBookingRequestDto } from '../../application/dtos/reschedule-booking-request.dto';
-import { JwtAuthGuard } from './guards/jwt-auth.guard';
-import { CurrentUser } from './decorators/current-user.decorator';
+import { Body, Controller, Get, Param, Post, Query, UseGuards, ConflictException } from '@nestjs/common';
+import { CreateBookingCommandHandler } from '../../../application/commands/create-booking.command-handler';
+import { BookingAlreadyExistsException } from '../../../domain/exceptions/booking-already-exists.exception';
+import { CancelBookingCommandHandler } from '../../../application/commands/cancel-booking.command-handler';
+import { RescheduleBookingCommandHandler } from '../../../application/commands/reschedule-booking.command-handler';
+import { GetBookingQueryHandler } from '../../../application/queries/get-booking.query-handler';
+import { ListBookingsQueryHandler } from '../../../application/queries/list-bookings.query-handler';
+import { CreateBookingRequestDto } from '../../../application/dtos/create-booking-request.dto';
+import { CancelBookingRequestDto } from '../../../application/dtos/cancel-booking-request.dto';
+import { RescheduleBookingRequestDto } from '../../../application/dtos/reschedule-booking-request.dto';
+import { JwtAuthGuard } from '../guards/jwt-auth.guard';
+import { CurrentUser } from '../decorators/current-user.decorator';
 
 interface JwtPayload {
   sub: string;
@@ -35,10 +36,19 @@ export class BookingController {
   @Post()
   @UseGuards(JwtAuthGuard)
   async createBooking(@Body() dto: CreateBookingRequestDto, @CurrentUser() user: JwtPayload) {
-    return this.createBookingHandler.execute({
-      ...dto,
-      createdBy: user.sub,
-    });
+    try {
+      return await this.createBookingHandler.execute({
+        ...dto,
+        startsAt: new Date(dto.startsAt),
+        endsAt: new Date(dto.endsAt),
+        createdBy: user.sub,
+      });
+    } catch (error: any) {
+      if (error instanceof BookingAlreadyExistsException || error.name === 'BookingAlreadyExistsException') {
+        throw new ConflictException(error.message);
+      }
+      throw error;
+    }
   }
 
   /**
@@ -122,8 +132,8 @@ export class BookingController {
   ) {
     return this.rescheduleBookingHandler.execute({
       bookingId,
-      newStartsAt: dto.newStartsAt,
-      newEndsAt: dto.newEndsAt,
+      newStartsAt: new Date(dto.newStartsAt),
+      newEndsAt: new Date(dto.newEndsAt),
       reason: dto.reason,
       rescheduledBy: user.sub,
     });

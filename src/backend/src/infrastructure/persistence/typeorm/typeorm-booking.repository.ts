@@ -150,7 +150,9 @@ export class TypeOrmBookingRepository implements BookingRepository {
 
       return this.toDomain(entity);
     } catch (error) {
-      await queryRunner.rollbackTransaction();
+      if (queryRunner.isTransactionActive) {
+        await queryRunner.rollbackTransaction();
+      }
       throw error;
     } finally {
       await queryRunner.release();

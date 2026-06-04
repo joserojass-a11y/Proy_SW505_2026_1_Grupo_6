@@ -6,6 +6,10 @@ import { TypeOrmUserEntitySchema } from '../../../src/infrastructure/persistence
 import { TypeOrmTenantEntitySchema } from '../../../src/infrastructure/persistence/typeorm/entities/typeorm-tenant.entity';
 import { TypeOrmTenantBillingProfileEntitySchema } from '../../../src/infrastructure/persistence/typeorm/entities/typeorm-tenant-billing-profile.entity';
 import { TypeOrmCustomerEntitySchema } from '../../../src/infrastructure/persistence/typeorm/entities/typeorm-customer.entity';
+import { TypeOrmBookingEntitySchema } from '../../../src/infrastructure/persistence/typeorm/entities/typeorm-booking.entity';
+import { TypeOrmBookingStatusHistoryEntitySchema } from '../../../src/infrastructure/persistence/typeorm/entities/typeorm-booking-status-history.entity';
+import { TypeOrmBookingRescheduleEntitySchema } from '../../../src/infrastructure/persistence/typeorm/entities/typeorm-booking-reschedule.entity';
+import { TypeOrmBookingCancellationEntitySchema } from '../../../src/infrastructure/persistence/typeorm/entities/typeorm-booking-cancellation.entity';
 import * as path from 'path';
 
 let container: StartedPostgreSqlContainer | null = null;
@@ -96,12 +100,16 @@ export async function startTestDatabase(): Promise<DataSource> {
       TypeOrmTenantEntitySchema,
       TypeOrmTenantBillingProfileEntitySchema,
       TypeOrmCustomerEntitySchema,
+      TypeOrmBookingEntitySchema,
+      TypeOrmBookingStatusHistoryEntitySchema,
+      TypeOrmBookingRescheduleEntitySchema,
+      TypeOrmBookingCancellationEntitySchema,
     ],
     migrations: [
       path.resolve(__dirname, '../../../src/infrastructure/persistence/typeorm/migrations/*.ts'),
     ],
-    migrationsRun: true,
-    synchronize: false,
+    migrationsRun: false,
+    synchronize: true,
     logging: false,
   });
 
