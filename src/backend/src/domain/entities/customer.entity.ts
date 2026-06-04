@@ -63,7 +63,7 @@ export class Customer {
     private _consentSigned: boolean,
     private _createdAt: Date,
     private _updatedAt: Date,
-  ) {}
+  ) { }
 
   static create(props: CreateCustomerProps): Customer {
     return new Customer(
