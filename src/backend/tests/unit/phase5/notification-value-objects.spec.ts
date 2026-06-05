@@ -1,9 +1,9 @@
-import { NotificationChannelCode } from '../../../../src/domain/value-objects/notification-channel-code.vo';
-import { NotificationTopicCode } from '../../../../src/domain/value-objects/notification-topic-code.vo';
-import { NotificationRecipientRole } from '../../../../src/domain/value-objects/notification-recipient-role.vo';
-import { NotificationEventStatus } from '../../../../src/domain/value-objects/notification-event-status.vo';
-import { NotificationRecipientType } from '../../../../src/domain/value-objects/notification-recipient-type.vo';
-import { NotificationEventId } from '../../../../src/domain/value-objects/notification-event-id.vo';
+import { NotificationChannelCode } from '../../../src/domain/value-objects/notification-channel-code.vo';
+import { NotificationTopicCode } from '../../../src/domain/value-objects/notification-topic-code.vo';
+import { NotificationRecipientRole } from '../../../src/domain/value-objects/notification-recipient-role.vo';
+import { NotificationEventStatus } from '../../../src/domain/value-objects/notification-event-status.vo';
+import { NotificationRecipientType } from '../../../src/domain/value-objects/notification-recipient-type.vo';
+import { NotificationEventId } from '../../../src/domain/value-objects/notification-event-id.vo';
 
 /**
  * Pruebas Unitarias: Value Objects de Notificaciones
@@ -287,5 +287,3 @@ describe('Value Objects de Notificaciones — Capa de Dominio', () => {
     });
   });
 });
-
-

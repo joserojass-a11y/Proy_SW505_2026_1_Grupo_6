@@ -27,9 +27,11 @@ jest.mock('nodemailer', () => ({
 
 describe('SmtpEmailService — Capa de Infraestructura', () => {
   let service: SmtpEmailService;
+  let consoleErrorSpy: jest.SpyInstance;
 
   beforeEach(() => {
     jest.clearAllMocks();
+    consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
 
     // Variables de entorno mínimas para instanciar el servicio
     process.env.SMTP_HOST     = 'smtp.test.local';
@@ -40,6 +42,10 @@ describe('SmtpEmailService — Capa de Infraestructura', () => {
     process.env.SMTP_FROM     = 'noreply@test.com';
 
     service = new SmtpEmailService();
+  });
+
+  afterEach(() => {
+    consoleErrorSpy.mockRestore();
   });
 
   // ─────────────────────────────────────────────────────────────────────
@@ -196,6 +202,3 @@ describe('EmailSendException — Estructura de la excepción', () => {
     expect(typeof exception.name).toBe('string');
   });
 });
-
-
-

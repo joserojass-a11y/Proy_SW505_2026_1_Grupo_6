@@ -23,15 +23,15 @@
  * ✓ Proper transaction handling
  */
 
-import { CreateBookingCommandHandler } from '../application/commands/create-booking.command-handler';
-import { CreateBookingCommand } from '../application/commands/create-booking.command';
-import { Booking } from '../domain/entities/booking.entity';
-import { BookingRepository } from '../domain/repositories/booking.repository';
-import { IAvailabilityService } from '../application/services/availability.interface';
-import { BookingId } from '../domain/value-objects/booking-id.vo';
-import { ServiceId } from '../domain/value-objects/service-id.vo';
-import { TenantId } from '../domain/value-objects/tenant-id.vo';
-import { BookingAlreadyExistsException } from '../domain/exceptions/booking-already-exists.exception';
+import { CreateBookingCommandHandler } from '../../../src/application/commands/create-booking.command-handler';
+import { CreateBookingCommand } from '../../../src/application/commands/create-booking.command';
+import { Booking } from '../../../src/domain/entities/booking.entity';
+import { BookingRepository } from '../../../src/domain/repositories/booking.repository';
+import { IAvailabilityService } from '../../../src/application/services/availability.interface';
+import { BookingId } from '../../../src/domain/value-objects/booking-id.vo';
+import { ServiceId } from '../../../src/domain/value-objects/service-id.vo';
+import { TenantId } from '../../../src/domain/value-objects/tenant-id.vo';
+import { BookingAlreadyExistsException } from '../../../src/domain/exceptions/booking-already-exists.exception';
 import { randomUUID } from 'crypto';
 
 /**

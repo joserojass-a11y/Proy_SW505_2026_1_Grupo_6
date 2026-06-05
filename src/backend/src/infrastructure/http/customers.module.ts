@@ -52,7 +52,6 @@ const getCustomerProfileHandlerProvider: Provider = {
   ],
   exports: [
     INFRASTRUCTURE_TOKENS.CUSTOMER_REPOSITORY,
-    INFRASTRUCTURE_TOKENS.TENANT_REPOSITORY,
     CreateCustomerCommandHandler,
     UpdateCustomerCommandHandler,
     GetCustomerProfileQueryHandler,

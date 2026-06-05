@@ -1,14 +1,14 @@
-import { CancelBookingCommandHandler } from '../application/commands/cancel-booking.command-handler';
-import { CancelBookingCommand } from '../application/commands/cancel-booking.command';
-import { Booking } from '../domain/entities/booking.entity';
-import { BookingId } from '../domain/value-objects/booking-id.vo';
-import { BranchId } from '../domain/value-objects/branch-id.vo';
-import { CustomerId } from '../domain/value-objects/customer-id.vo';
-import { ServiceId } from '../domain/value-objects/service-id.vo';
-import { TenantId } from '../domain/value-objects/tenant-id.vo';
-import { UserId } from '../domain/value-objects/user-id.vo';
-import { BookingRepository } from '../domain/repositories/booking.repository';
-import { BookingNotFoundException } from '../domain/exceptions/booking-not-found.exception';
+import { CancelBookingCommandHandler } from '../../../src/application/commands/cancel-booking.command-handler';
+import { CancelBookingCommand } from '../../../src/application/commands/cancel-booking.command';
+import { Booking } from '../../../src/domain/entities/booking.entity';
+import { BookingId } from '../../../src/domain/value-objects/booking-id.vo';
+import { BranchId } from '../../../src/domain/value-objects/branch-id.vo';
+import { CustomerId } from '../../../src/domain/value-objects/customer-id.vo';
+import { ServiceId } from '../../../src/domain/value-objects/service-id.vo';
+import { TenantId } from '../../../src/domain/value-objects/tenant-id.vo';
+import { UserId } from '../../../src/domain/value-objects/user-id.vo';
+import { BookingRepository } from '../../../src/domain/repositories/booking.repository';
+import { BookingNotFoundException } from '../../../src/domain/exceptions/booking-not-found.exception';
 
 class MockBookingRepository implements BookingRepository {
   bookings: Map<string, Booking> = new Map();

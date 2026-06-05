@@ -1,9 +1,9 @@
-import { CreateBookingCommandHandler } from '../application/commands/create-booking.command-handler';
-import { CreateBookingCommand } from '../application/commands/create-booking.command';
-import { BookingRepository } from '../domain/repositories/booking.repository';
-import { IAvailabilityService } from '../application/services/availability.interface';
-import { Booking } from '../domain/entities/booking.entity';
-import { BookingAlreadyExistsException } from '../domain/exceptions/booking-already-exists.exception';
+import { CreateBookingCommandHandler } from '../../../src/application/commands/create-booking.command-handler';
+import { CreateBookingCommand } from '../../../src/application/commands/create-booking.command';
+import { BookingRepository } from '../../../src/domain/repositories/booking.repository';
+import { IAvailabilityService } from '../../../src/application/services/availability.interface';
+import { Booking } from '../../../src/domain/entities/booking.entity';
+import { BookingAlreadyExistsException } from '../../../src/domain/exceptions/booking-already-exists.exception';
 
 // Mock implementations
 class MockBookingRepository implements BookingRepository {

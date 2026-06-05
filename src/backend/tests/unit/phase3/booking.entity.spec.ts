@@ -1,12 +1,12 @@
-import { Booking } from '../domain/entities/booking.entity';
-import { BookingId } from '../domain/value-objects/booking-id.vo';
-import { BranchId } from '../domain/value-objects/branch-id.vo';
-import { CustomerId } from '../domain/value-objects/customer-id.vo';
-import { ServiceId } from '../domain/value-objects/service-id.vo';
-import { TenantId } from '../domain/value-objects/tenant-id.vo';
-import { UserId } from '../domain/value-objects/user-id.vo';
-import { InvalidBookingDateRangeException } from '../domain/exceptions/invalid-booking-date-range.exception';
-import { InvalidTransitionException } from '../domain/exceptions/invalid-transition.exception';
+import { Booking } from '../../../src/domain/entities/booking.entity';
+import { BookingId } from '../../../src/domain/value-objects/booking-id.vo';
+import { BranchId } from '../../../src/domain/value-objects/branch-id.vo';
+import { CustomerId } from '../../../src/domain/value-objects/customer-id.vo';
+import { ServiceId } from '../../../src/domain/value-objects/service-id.vo';
+import { TenantId } from '../../../src/domain/value-objects/tenant-id.vo';
+import { UserId } from '../../../src/domain/value-objects/user-id.vo';
+import { InvalidBookingDateRangeException } from '../../../src/domain/exceptions/invalid-booking-date-range.exception';
+import { InvalidTransitionException } from '../../../src/domain/exceptions/invalid-transition.exception';
 
 describe('Booking Entity', () => {
   const createTestBooking = (overrides?: Partial<any>) => {

@@ -1,17 +1,17 @@
-import { Email } from '../../../../src/domain/value-objects/email.vo';
-import { UserId } from '../../../../src/domain/value-objects/user-id.vo';
-import { CustomerId } from '../../../../src/domain/value-objects/customer-id.vo';
-import { TenantId } from '../../../../src/domain/value-objects/tenant-id.vo';
-import { FullName } from '../../../../src/domain/value-objects/full-name.vo';
-import { PasswordHash } from '../../../../src/domain/value-objects/password-hash.vo';
-import { UserRole } from '../../../../src/domain/value-objects/user-role.vo';
-import { UserStatus } from '../../../../src/domain/value-objects/user-status.vo';
-import { InvalidEmailException } from '../../../../src/domain/exceptions/invalid-email.exception';
-import { InvalidUserIdException } from '../../../../src/domain/exceptions/invalid-user-id.exception';
-import { InvalidFullNameException } from '../../../../src/domain/exceptions/invalid-full-name.exception';
-import { InvalidPasswordHashException } from '../../../../src/domain/exceptions/invalid-password-hash.exception';
-import { InvalidUserRoleException } from '../../../../src/domain/exceptions/invalid-user-role.exception';
-import { InvalidUserStatusException } from '../../../../src/domain/exceptions/invalid-user-status.exception';
+import { Email } from '../../../src/domain/value-objects/email.vo';
+import { UserId } from '../../../src/domain/value-objects/user-id.vo';
+import { CustomerId } from '../../../src/domain/value-objects/customer-id.vo';
+import { TenantId } from '../../../src/domain/value-objects/tenant-id.vo';
+import { FullName } from '../../../src/domain/value-objects/full-name.vo';
+import { PasswordHash } from '../../../src/domain/value-objects/password-hash.vo';
+import { UserRole } from '../../../src/domain/value-objects/user-role.vo';
+import { UserStatus } from '../../../src/domain/value-objects/user-status.vo';
+import { InvalidEmailException } from '../../../src/domain/exceptions/invalid-email.exception';
+import { InvalidUserIdException } from '../../../src/domain/exceptions/invalid-user-id.exception';
+import { InvalidFullNameException } from '../../../src/domain/exceptions/invalid-full-name.exception';
+import { InvalidPasswordHashException } from '../../../src/domain/exceptions/invalid-password-hash.exception';
+import { InvalidUserRoleException } from '../../../src/domain/exceptions/invalid-user-role.exception';
+import { InvalidUserStatusException } from '../../../src/domain/exceptions/invalid-user-status.exception';
 
 describe('Value Objects Unit Tests', () => {
   describe('Email', () => {

@@ -1,5 +1,5 @@
-import { NotificationEvent } from '../../../../src/domain/entities/notification-event.entity';
-import { MaxRetriesExceededException } from '../../../../src/domain/exceptions/max-retries-exceeded.exception';
+import { NotificationEvent } from '../../../src/domain/entities/notification-event.entity';
+import { MaxRetriesExceededException } from '../../../src/domain/exceptions/max-retries-exceeded.exception';
 
 /**
  * Pruebas Unitarias: Entidad NotificationEvent
@@ -300,7 +300,3 @@ describe('NotificationEvent Entity', () => {
     });
   });
 });
-
-
-
-

@@ -10,6 +10,8 @@ import { TypeOrmBookingEntitySchema } from '../persistence/typeorm/entities/type
 import { TypeOrmBookingStatusHistoryEntitySchema } from '../persistence/typeorm/entities/typeorm-booking-status-history.entity';
 import { TypeOrmBookingCancellationEntitySchema } from '../persistence/typeorm/entities/typeorm-booking-cancellation.entity';
 import { TypeOrmBookingRescheduleEntitySchema } from '../persistence/typeorm/entities/typeorm-booking-reschedule.entity';
+import { TypeOrmNotificationEventEntitySchema } from '../persistence/typeorm/entities/typeorm-notification-event.entity';
+import { TypeOrmNotificationPreferenceEntitySchema } from '../persistence/typeorm/entities/typeorm-notification-preference.entity';
 
 function buildDataSourceOptions(): DataSourceOptions {
   const isDocker = existsSync('/.dockerenv') || process.env.IS_DOCKER === 'true';
@@ -52,7 +54,9 @@ function buildDataSourceOptions(): DataSourceOptions {
         TypeOrmBookingEntitySchema,
         TypeOrmBookingStatusHistoryEntitySchema,
         TypeOrmBookingCancellationEntitySchema,
-        TypeOrmBookingRescheduleEntitySchema
+        TypeOrmBookingRescheduleEntitySchema,
+        TypeOrmNotificationEventEntitySchema,
+        TypeOrmNotificationPreferenceEntitySchema
       ],
       migrations: [__dirname + '/persistence/typeorm/migrations/*.{ts,js}'],
       migrationsRun: true,
@@ -82,7 +86,9 @@ function buildDataSourceOptions(): DataSourceOptions {
       TypeOrmBookingEntitySchema,
       TypeOrmBookingStatusHistoryEntitySchema,
       TypeOrmBookingCancellationEntitySchema,
-      TypeOrmBookingRescheduleEntitySchema
+      TypeOrmBookingRescheduleEntitySchema,
+      TypeOrmNotificationEventEntitySchema,
+      TypeOrmNotificationPreferenceEntitySchema
     ],
     migrations: [__dirname + '/persistence/typeorm/migrations/*.{ts,js}'],
     migrationsRun: true,

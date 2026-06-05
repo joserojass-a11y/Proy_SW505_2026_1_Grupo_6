@@ -1,31 +1,31 @@
-import { Service } from '../../../../src/domain/entities/service.entity';
-import { Resource } from '../../../../src/domain/entities/resource.entity';
-import { ResourceAvailabilityRule } from '../../../../src/domain/entities/resource-availability-rule.entity';
-import { ResourceBreak } from '../../../../src/domain/entities/resource-break.entity';
-import { ScheduleSlot } from '../../../../src/domain/entities/schedule-slot.entity';
+import { Service } from '../../../src/domain/entities/service.entity';
+import { Resource } from '../../../src/domain/entities/resource.entity';
+import { ResourceAvailabilityRule } from '../../../src/domain/entities/resource-availability-rule.entity';
+import { ResourceBreak } from '../../../src/domain/entities/resource-break.entity';
+import { ScheduleSlot } from '../../../src/domain/entities/schedule-slot.entity';
 
-import { ServiceId } from '../../../../src/domain/value-objects/service-id.vo';
-import { ResourceId } from '../../../../src/domain/value-objects/resource-id.vo';
-import { CategoryId } from '../../../../src/domain/value-objects/category-id.vo';
-import { BranchId } from '../../../../src/domain/value-objects/branch-id.vo';
-import { ResourceTypeId } from '../../../../src/domain/value-objects/resource-type-id.vo';
-import { ResourceAvailabilityRuleId } from '../../../../src/domain/value-objects/availability-rule-id.vo';
-import { ResourceBreakId } from '../../../../src/domain/value-objects/break-id.vo';
-import { ScheduleSlotId } from '../../../../src/domain/value-objects/schedule-slot-id.vo';
-import { TenantId } from '../../../../src/domain/value-objects/tenant-id.vo';
-import { TimeRange } from '../../../../src/domain/value-objects/time-range.vo';
-import { TimeSlot } from '../../../../src/domain/value-objects/time-slot.vo';
+import { ServiceId } from '../../../src/domain/value-objects/service-id.vo';
+import { ResourceId } from '../../../src/domain/value-objects/resource-id.vo';
+import { CategoryId } from '../../../src/domain/value-objects/category-id.vo';
+import { BranchId } from '../../../src/domain/value-objects/branch-id.vo';
+import { ResourceTypeId } from '../../../src/domain/value-objects/resource-type-id.vo';
+import { ResourceAvailabilityRuleId } from '../../../src/domain/value-objects/availability-rule-id.vo';
+import { ResourceBreakId } from '../../../src/domain/value-objects/break-id.vo';
+import { ScheduleSlotId } from '../../../src/domain/value-objects/schedule-slot-id.vo';
+import { TenantId } from '../../../src/domain/value-objects/tenant-id.vo';
+import { TimeRange } from '../../../src/domain/value-objects/time-range.vo';
+import { TimeSlot } from '../../../src/domain/value-objects/time-slot.vo';
 
-import { InvalidServiceIdException } from '../../../../src/domain/exceptions/invalid-service-id.exception';
-import { InvalidResourceIdException } from '../../../../src/domain/exceptions/invalid-resource-id.exception';
-import { InvalidCategoryIdException } from '../../../../src/domain/exceptions/invalid-category-id.exception';
-import { InvalidBranchIdException } from '../../../../src/domain/exceptions/invalid-branch-id.exception';
-import { InvalidResourceTypeIdException } from '../../../../src/domain/exceptions/invalid-resource-type-id.exception';
-import { InvalidAvailabilityRuleIdException } from '../../../../src/domain/exceptions/invalid-availability-rule-id.exception';
-import { InvalidBreakIdException } from '../../../../src/domain/exceptions/invalid-break-id.exception';
-import { InvalidScheduleSlotIdException } from '../../../../src/domain/exceptions/invalid-schedule-slot-id.exception';
-import { InvalidTimeRangeException } from '../../../../src/domain/exceptions/invalid-time-range.exception';
-import { InvalidTimeSlotException } from '../../../../src/domain/exceptions/invalid-time-slot.exception';
+import { InvalidServiceIdException } from '../../../src/domain/exceptions/invalid-service-id.exception';
+import { InvalidResourceIdException } from '../../../src/domain/exceptions/invalid-resource-id.exception';
+import { InvalidCategoryIdException } from '../../../src/domain/exceptions/invalid-category-id.exception';
+import { InvalidBranchIdException } from '../../../src/domain/exceptions/invalid-branch-id.exception';
+import { InvalidResourceTypeIdException } from '../../../src/domain/exceptions/invalid-resource-type-id.exception';
+import { InvalidAvailabilityRuleIdException } from '../../../src/domain/exceptions/invalid-availability-rule-id.exception';
+import { InvalidBreakIdException } from '../../../src/domain/exceptions/invalid-break-id.exception';
+import { InvalidScheduleSlotIdException } from '../../../src/domain/exceptions/invalid-schedule-slot-id.exception';
+import { InvalidTimeRangeException } from '../../../src/domain/exceptions/invalid-time-range.exception';
+import { InvalidTimeSlotException } from '../../../src/domain/exceptions/invalid-time-slot.exception';
 
 describe('Phase 2 Domain Layer Unit Tests', () => {
   const validUuid1 = '123e4567-e89b-12d3-a456-426614174001';

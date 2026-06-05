@@ -1,16 +1,16 @@
-import { User } from '../../../../src/domain/entities/user.entity';
-import { Tenant } from '../../../../src/domain/entities/tenant.entity';
-import { TenantBillingProfile } from '../../../../src/domain/entities/tenant-billing-profile.entity';
-import { Customer } from '../../../../src/domain/entities/customer.entity';
-import { UserId } from '../../../../src/domain/value-objects/user-id.vo';
-import { Email } from '../../../../src/domain/value-objects/email.vo';
-import { PasswordHash } from '../../../../src/domain/value-objects/password-hash.vo';
-import { FullName } from '../../../../src/domain/value-objects/full-name.vo';
-import { UserRole } from '../../../../src/domain/value-objects/user-role.vo';
-import { UserStatus } from '../../../../src/domain/value-objects/user-status.vo';
-import { TenantId } from '../../../../src/domain/value-objects/tenant-id.vo';
-import { CustomerId } from '../../../../src/domain/value-objects/customer-id.vo';
-import { UserStatusTransitionException } from '../../../../src/domain/exceptions/user-status-transition.exception';
+import { User } from '../../../src/domain/entities/user.entity';
+import { Tenant } from '../../../src/domain/entities/tenant.entity';
+import { TenantBillingProfile } from '../../../src/domain/entities/tenant-billing-profile.entity';
+import { Customer } from '../../../src/domain/entities/customer.entity';
+import { UserId } from '../../../src/domain/value-objects/user-id.vo';
+import { Email } from '../../../src/domain/value-objects/email.vo';
+import { PasswordHash } from '../../../src/domain/value-objects/password-hash.vo';
+import { FullName } from '../../../src/domain/value-objects/full-name.vo';
+import { UserRole } from '../../../src/domain/value-objects/user-role.vo';
+import { UserStatus } from '../../../src/domain/value-objects/user-status.vo';
+import { TenantId } from '../../../src/domain/value-objects/tenant-id.vo';
+import { CustomerId } from '../../../src/domain/value-objects/customer-id.vo';
+import { UserStatusTransitionException } from '../../../src/domain/exceptions/user-status-transition.exception';
 
 describe('Domain Entities Unit Tests', () => {
   const validUuid1 = '123e4567-e89b-12d3-a456-426614174001';

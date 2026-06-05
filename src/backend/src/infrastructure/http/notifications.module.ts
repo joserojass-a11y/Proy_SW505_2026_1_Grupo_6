@@ -15,6 +15,7 @@ import { UpdateNotificationPreferenceCommandHandler } from '../../application/co
 import { GetPendingNotificationsQueryHandler } from '../../application/queries/get-pending-notifications.query-handler';
 import { GetCustomerPreferencesQueryHandler } from '../../application/queries/get-customer-preferences.query-handler';
 import { GetNotificationHistoryQueryHandler } from '../../application/queries/get-notification-history.query-handler';
+import { BookingReminderSchedulerService } from '../services/booking-reminder-scheduler.service';
 
 /**
  * Provider: NotificationEventRepository
@@ -174,6 +175,7 @@ const notificationOrchestrationServiceProvider: Provider = {
     getNotificationHistoryHandlerProvider,
     // Orchestration Service
     notificationOrchestrationServiceProvider,
+    BookingReminderSchedulerService,
   ],
   exports: [
     INFRASTRUCTURE_TOKENS.NOTIFICATION_EVENT_REPOSITORY,

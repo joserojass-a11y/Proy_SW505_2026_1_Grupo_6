@@ -1,20 +1,20 @@
-import { ResourceAvailabilityRuleId } from '../../../../src/domain/value-objects/availability-rule-id.vo';
-import { BranchId } from '../../../../src/domain/value-objects/branch-id.vo';
-import { ResourceBreakId } from '../../../../src/domain/value-objects/break-id.vo';
-import { CategoryId } from '../../../../src/domain/value-objects/category-id.vo';
-import { ResourceId } from '../../../../src/domain/value-objects/resource-id.vo';
-import { ResourceTypeId } from '../../../../src/domain/value-objects/resource-type-id.vo';
-import { ScheduleSlotId } from '../../../../src/domain/value-objects/schedule-slot-id.vo';
-import { ServiceId } from '../../../../src/domain/value-objects/service-id.vo';
+import { ResourceAvailabilityRuleId } from '../../../src/domain/value-objects/availability-rule-id.vo';
+import { BranchId } from '../../../src/domain/value-objects/branch-id.vo';
+import { ResourceBreakId } from '../../../src/domain/value-objects/break-id.vo';
+import { CategoryId } from '../../../src/domain/value-objects/category-id.vo';
+import { ResourceId } from '../../../src/domain/value-objects/resource-id.vo';
+import { ResourceTypeId } from '../../../src/domain/value-objects/resource-type-id.vo';
+import { ScheduleSlotId } from '../../../src/domain/value-objects/schedule-slot-id.vo';
+import { ServiceId } from '../../../src/domain/value-objects/service-id.vo';
 
-import { InvalidAvailabilityRuleIdException } from '../../../../src/domain/exceptions/invalid-availability-rule-id.exception';
-import { InvalidBranchIdException } from '../../../../src/domain/exceptions/invalid-branch-id.exception';
-import { InvalidBreakIdException } from '../../../../src/domain/exceptions/invalid-break-id.exception';
-import { InvalidCategoryIdException } from '../../../../src/domain/exceptions/invalid-category-id.exception';
-import { InvalidResourceIdException } from '../../../../src/domain/exceptions/invalid-resource-id.exception';
-import { InvalidResourceTypeIdException } from '../../../../src/domain/exceptions/invalid-resource-type-id.exception';
-import { InvalidScheduleSlotIdException } from '../../../../src/domain/exceptions/invalid-schedule-slot-id.exception';
-import { InvalidServiceIdException } from '../../../../src/domain/exceptions/invalid-service-id.exception';
+import { InvalidAvailabilityRuleIdException } from '../../../src/domain/exceptions/invalid-availability-rule-id.exception';
+import { InvalidBranchIdException } from '../../../src/domain/exceptions/invalid-branch-id.exception';
+import { InvalidBreakIdException } from '../../../src/domain/exceptions/invalid-break-id.exception';
+import { InvalidCategoryIdException } from '../../../src/domain/exceptions/invalid-category-id.exception';
+import { InvalidResourceIdException } from '../../../src/domain/exceptions/invalid-resource-id.exception';
+import { InvalidResourceTypeIdException } from '../../../src/domain/exceptions/invalid-resource-type-id.exception';
+import { InvalidScheduleSlotIdException } from '../../../src/domain/exceptions/invalid-schedule-slot-id.exception';
+import { InvalidServiceIdException } from '../../../src/domain/exceptions/invalid-service-id.exception';
 
 describe('Phase 2 Value Objects - Equivalencia, Límites y Caminos', () => {
   const validUuid = '123e4567-e89b-12d3-a456-426614174000';

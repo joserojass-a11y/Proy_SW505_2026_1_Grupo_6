@@ -1,4 +1,4 @@
-import { NotificationPreference } from '../../../../src/domain/entities/notification-preference.entity';
+import { NotificationPreference } from '../../../src/domain/entities/notification-preference.entity';
 
 /**
  * Pruebas Unitarias: Entidad NotificationPreference
@@ -215,6 +215,3 @@ describe('Entidad NotificationPreference — Capa de Dominio', () => {
     });
   });
 });
-
-
-

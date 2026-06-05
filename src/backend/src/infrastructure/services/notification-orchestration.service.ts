@@ -35,7 +35,7 @@ import { INFRASTRUCTURE_TOKENS } from '../shared/infrastructure.tokens';
 export class NotificationOrchestrationService
   implements OnModuleInit, OnModuleDestroy
 {
-  private consumer: NodeJS.Timer | null = null;
+  private consumer: NodeJS.Timeout | null = null;
   private isProcessing = false;
 
   constructor(
@@ -106,7 +106,7 @@ export class NotificationOrchestrationService
           // Obtener preferencias del cliente (si es customer)
           if (event.recipientType.value === 'customer') {
             const preferences = await this.prefRepository.findByCustomerId(
-              event.recipientId,
+              event.recipientId.value,
             );
 
             // Validar que el cliente tiene habilitado el canal

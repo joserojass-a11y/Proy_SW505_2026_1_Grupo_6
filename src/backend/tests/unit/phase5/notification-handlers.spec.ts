@@ -16,25 +16,7 @@ import { NotificationNotFoundException } from '../../../src/domain/exceptions/no
 import { DuplicateNotificationPreferenceException } from '../../../src/domain/exceptions/duplicate-notification-preference.exception';
 import { MaxRetriesExceededException } from '../../../src/domain/exceptions/max-retries-exceeded.exception';
 
-/**
- * Pruebas Unitarias: CQS Handlers del módulo de Notificaciones (Fase 4)
- *
- * Cubre (Commands):
- * - CreateNotificationCommandHandler           → Crear evento de notificación
- * - MarkNotificationAsSentCommandHandler       → Marcar evento como enviado
- * - RecordNotificationFailureCommandHandler    → Registrar fallo con reintentos
- * - CreateNotificationPreferenceCommandHandler → Crear preferencia de cliente
- * - UpdateNotificationPreferenceCommandHandler → Actualizar preferencia existente
- *
- * Cubre (Queries):
- * - GetPendingNotificationsQueryHandler → Obtener cola de envío pendiente
- * - GetCustomerPreferencesQueryHandler  → Obtener preferencias de un cliente
- * - GetNotificationHistoryQueryHandler  → Historial de notificaciones del recipient
- *
- * Patrón: Repository mocking vía jest.fn() — sin base de datos real.
- */
 describe('CQS Handlers — Módulo Notificaciones (Fase 4)', () => {
-  // UUIDs fijos para facilitar aserciones
   const TENANT_UUID    = '550e8400-e29b-41d4-a716-446655440001';
   const BOOKING_UUID   = '550e8400-e29b-41d4-a716-446655440002';
   const TEMPLATE_UUID  = '550e8400-e29b-41d4-a716-446655440003';
@@ -42,7 +24,6 @@ describe('CQS Handlers — Módulo Notificaciones (Fase 4)', () => {
   const TOPIC_UUID     = '550e8400-e29b-41d4-a716-446655440005';
   const CHANNEL_UUID   = '550e8400-e29b-41d4-a716-446655440006';
 
-  /** Construye un NotificationEvent en estado pending para reutilizar */
   const makeEvent = (overrides: Partial<Parameters<typeof NotificationEvent.create>[0]> = {}) =>
     NotificationEvent.create({
       tenantId: TENANT_UUID,
@@ -60,9 +41,6 @@ describe('CQS Handlers — Módulo Notificaciones (Fase 4)', () => {
       ...overrides,
     });
 
-  // ─────────────────────────────────────────────────────────────────────
-  // Mock repositories
-  // ─────────────────────────────────────────────────────────────────────
   let mockEventRepo: jest.Mocked<NotificationEventRepository>;
   let mockPrefRepo: jest.Mocked<NotificationPreferenceRepository>;
 
@@ -91,10 +69,6 @@ describe('CQS Handlers — Módulo Notificaciones (Fase 4)', () => {
       exists: jest.fn(),
     };
   });
-
-  // ═════════════════════════════════════════════════════════════════════
-  // COMMANDS
-  // ═════════════════════════════════════════════════════════════════════
 
   describe('CreateNotificationCommandHandler', () => {
     let handler: CreateNotificationCommandHandler;
@@ -180,8 +154,6 @@ describe('CQS Handlers — Módulo Notificaciones (Fase 4)', () => {
     });
   });
 
-  // ─────────────────────────────────────────────────────────────────────
-
   describe('MarkNotificationAsSentCommandHandler', () => {
     let handler: MarkNotificationAsSentCommandHandler;
 
@@ -221,8 +193,6 @@ describe('CQS Handlers — Módulo Notificaciones (Fase 4)', () => {
       ).rejects.toThrow();
     });
   });
-
-  // ─────────────────────────────────────────────────────────────────────
 
   describe('RecordNotificationFailureCommandHandler', () => {
     let handler: RecordNotificationFailureCommandHandler;
@@ -285,8 +255,6 @@ describe('CQS Handlers — Módulo Notificaciones (Fase 4)', () => {
     });
   });
 
-  // ─────────────────────────────────────────────────────────────────────
-
   describe('CreateNotificationPreferenceCommandHandler', () => {
     let handler: CreateNotificationPreferenceCommandHandler;
 
@@ -342,8 +310,6 @@ describe('CQS Handlers — Módulo Notificaciones (Fase 4)', () => {
       expect(mockPrefRepo.save).not.toHaveBeenCalled();
     });
   });
-
-  // ─────────────────────────────────────────────────────────────────────
 
   describe('UpdateNotificationPreferenceCommandHandler', () => {
     let handler: UpdateNotificationPreferenceCommandHandler;
@@ -406,10 +372,6 @@ describe('CQS Handlers — Módulo Notificaciones (Fase 4)', () => {
     });
   });
 
-  // ═════════════════════════════════════════════════════════════════════
-  // QUERIES
-  // ═════════════════════════════════════════════════════════════════════
-
   describe('GetPendingNotificationsQueryHandler', () => {
     let handler: GetPendingNotificationsQueryHandler;
 
@@ -446,8 +408,6 @@ describe('CQS Handlers — Módulo Notificaciones (Fase 4)', () => {
       expect(mockEventRepo.update).not.toHaveBeenCalled();
     });
   });
-
-  // ─────────────────────────────────────────────────────────────────────
 
   describe('GetCustomerPreferencesQueryHandler', () => {
     let handler: GetCustomerPreferencesQueryHandler;
@@ -493,8 +453,6 @@ describe('CQS Handlers — Módulo Notificaciones (Fase 4)', () => {
       expect(result.some((p) => !p.isEnabled)).toBe(true);
     });
   });
-
-  // ─────────────────────────────────────────────────────────────────────
 
   describe('GetNotificationHistoryQueryHandler', () => {
     let handler: GetNotificationHistoryQueryHandler;
@@ -544,5 +502,3 @@ describe('CQS Handlers — Módulo Notificaciones (Fase 4)', () => {
     });
   });
 });
-
-
