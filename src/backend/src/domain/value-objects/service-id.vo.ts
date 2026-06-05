@@ -1,5 +1,6 @@
 import { InvalidServiceIdException } from '../exceptions/invalid-service-id.exception';
 
+
 const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
 export class ServiceId {
@@ -17,6 +18,7 @@ export class ServiceId {
 
   static fromNullable(value?: string | null): ServiceId | null {
     return value ? ServiceId.create(value) : null;
+
   }
 
   get value(): string {
@@ -26,4 +28,6 @@ export class ServiceId {
   equals(other: ServiceId): boolean {
     return this._value === other.value;
   }
+
+
 }
