@@ -5,7 +5,6 @@ import { UsersModule } from './users.module';
 import { CompaniesModule } from './companies.module';
 import { INFRASTRUCTURE_TOKENS } from '../shared/infrastructure.tokens';
 import { TypeOrmCustomerRepository } from '../persistence/typeorm/typeorm-customer.repository';
-import { TypeOrmTenantRepository } from '../persistence/typeorm/typeorm-tenant.repository';
 import { CreateCustomerCommandHandler } from '../../application/commands/create-customer.command-handler';
 import { UpdateCustomerCommandHandler } from '../../application/commands/update-customer.command-handler';
 import { GetCustomerProfileQueryHandler } from '../../application/queries/get-customer-profile.query-handler';
@@ -20,15 +19,9 @@ const customerRepositoryProvider: Provider = {
   inject: [INFRASTRUCTURE_TOKENS.DATA_SOURCE],
 };
 
-const tenantRepositoryProvider: Provider = {
-  provide: INFRASTRUCTURE_TOKENS.TENANT_REPOSITORY,
-  useFactory: (dataSource: DataSource) => new TypeOrmTenantRepository(dataSource),
-  inject: [INFRASTRUCTURE_TOKENS.DATA_SOURCE],
-};
-
 const createCustomerHandlerProvider: Provider = {
   provide: CreateCustomerCommandHandler,
-  useFactory: (customerRepository: TypeOrmCustomerRepository, tenantRepository: TypeOrmTenantRepository) =>
+  useFactory: (customerRepository: TypeOrmCustomerRepository, tenantRepository: any) =>
     new CreateCustomerCommandHandler(customerRepository, tenantRepository),
   inject: [INFRASTRUCTURE_TOKENS.CUSTOMER_REPOSITORY, INFRASTRUCTURE_TOKENS.TENANT_REPOSITORY],
 };
@@ -50,7 +43,6 @@ const getCustomerProfileHandlerProvider: Provider = {
   controllers: [CustomersController],
   providers: [
     customerRepositoryProvider,
-    tenantRepositoryProvider,
     createCustomerHandlerProvider,
     updateCustomerHandlerProvider,
     getCustomerProfileHandlerProvider,
@@ -60,7 +52,6 @@ const getCustomerProfileHandlerProvider: Provider = {
   ],
   exports: [
     INFRASTRUCTURE_TOKENS.CUSTOMER_REPOSITORY,
-    INFRASTRUCTURE_TOKENS.TENANT_REPOSITORY,
     CreateCustomerCommandHandler,
     UpdateCustomerCommandHandler,
     GetCustomerProfileQueryHandler,

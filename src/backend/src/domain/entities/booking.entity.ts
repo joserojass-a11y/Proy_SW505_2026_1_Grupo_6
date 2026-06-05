@@ -241,7 +241,7 @@ export class Booking {
       sourceChannel: this._sourceChannel,
       notes: this._notes,
       customData: this._customData,
-      createdBy: this._createdBy?.value,
+      createdBy: this._createdBy?.value ?? '',
       createdAt: this._createdAt!,
       updatedAt: this._updatedAt!,
     };

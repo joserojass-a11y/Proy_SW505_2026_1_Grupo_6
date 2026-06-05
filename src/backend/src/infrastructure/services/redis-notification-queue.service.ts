@@ -20,7 +20,7 @@ import { NotificationQueueService } from '../../application/services/notificatio
  */
 @Injectable()
 export class RedisNotificationQueueService implements NotificationQueueService {
-  private consumer: NodeJS.Timer | null = null;
+  private consumer: NodeJS.Timeout | null = null;
   private readonly QUEUE_KEY = 'notifications:queue';
   private readonly PROCESSING_KEY = 'notifications:processing';
   private readonly RETRY_KEY_PREFIX = 'notifications:retry:';

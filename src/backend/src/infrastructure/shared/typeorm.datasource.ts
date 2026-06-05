@@ -11,6 +11,8 @@ import { TypeOrmBookingEntitySchema } from '../persistence/typeorm/entities/type
 import { TypeOrmBookingStatusHistoryEntitySchema } from '../persistence/typeorm/entities/typeorm-booking-status-history.entity';
 import { TypeOrmBookingCancellationEntitySchema } from '../persistence/typeorm/entities/typeorm-booking-cancellation.entity';
 import { TypeOrmBookingRescheduleEntitySchema } from '../persistence/typeorm/entities/typeorm-booking-reschedule.entity';
+import { TypeOrmNotificationEventEntitySchema } from '../persistence/typeorm/entities/typeorm-notification-event.entity';
+import { TypeOrmNotificationPreferenceEntitySchema } from '../persistence/typeorm/entities/typeorm-notification-preference.entity';
 
 const backendEnvPath = resolve(process.cwd(), '.env');
 const workspaceEnvPath = resolve(process.cwd(), '..', '..', '.env');
@@ -58,7 +60,18 @@ if (!databaseUrl && (!host || !username || typeof password !== 'string' || passw
 export const AppDataSource = new DataSource({
   type: 'postgres',
   ...(databaseUrl ? { url: databaseUrl } : { host, port, username, password, database }),
-  entities: [TypeOrmUserEntitySchema],
+  entities: [
+    TypeOrmUserEntitySchema,
+    TypeOrmTenantEntitySchema,
+    TypeOrmTenantBillingProfileEntitySchema,
+    TypeOrmCustomerEntitySchema,
+    TypeOrmBookingEntitySchema,
+    TypeOrmBookingStatusHistoryEntitySchema,
+    TypeOrmBookingCancellationEntitySchema,
+    TypeOrmBookingRescheduleEntitySchema,
+    TypeOrmNotificationEventEntitySchema,
+    TypeOrmNotificationPreferenceEntitySchema
+  ],
   migrations: [resolve(__dirname, '../persistence/typeorm/migrations/*.{ts,js}')],
   synchronize: false,
   logging: process.env.TYPEORM_LOGGING === 'true',
