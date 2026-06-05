@@ -7,6 +7,10 @@ import { TypeOrmTenantEntitySchema } from '../persistence/typeorm/entities/typeo
 import { TypeOrmTenantBillingProfileEntitySchema } from '../persistence/typeorm/entities/typeorm-tenant-billing-profile.entity';
 import { TypeOrmCustomerEntitySchema } from '../persistence/typeorm/entities/typeorm-customer.entity';
 import { TypeOrmUserEntitySchema } from '../persistence/typeorm/entities/typeorm-user.entity';
+import { TypeOrmBookingEntitySchema } from '../persistence/typeorm/entities/typeorm-booking.entity';
+import { TypeOrmBookingStatusHistoryEntitySchema } from '../persistence/typeorm/entities/typeorm-booking-status-history.entity';
+import { TypeOrmBookingCancellationEntitySchema } from '../persistence/typeorm/entities/typeorm-booking-cancellation.entity';
+import { TypeOrmBookingRescheduleEntitySchema } from '../persistence/typeorm/entities/typeorm-booking-reschedule.entity';
 
 const backendEnvPath = resolve(process.cwd(), '.env');
 const workspaceEnvPath = resolve(process.cwd(), '..', '..', '.env');
@@ -17,8 +21,29 @@ if (existsSync(backendEnvPath)) {
   loadEnv({ path: workspaceEnvPath });
 }
 
-const databaseUrl = process.env.DATABASE_URL;
-const host = process.env.DB_HOST;
+const isDocker = existsSync('/.dockerenv') || process.env.IS_DOCKER === 'true';
+const isLocal = !isDocker || process.platform === 'win32';
+
+let databaseUrl = process.env.DATABASE_URL;
+if (isLocal && databaseUrl) {
+  try {
+    const parsedUrl = new URL(databaseUrl);
+    if (parsedUrl.hostname === 'postgres') {
+      parsedUrl.hostname = 'localhost';
+      databaseUrl = parsedUrl.toString();
+    }
+  } catch (err) {
+    if (databaseUrl.includes('@postgres:')) {
+      databaseUrl = databaseUrl.replace('@postgres:', '@localhost:');
+    }
+  }
+}
+
+let host = process.env.DB_HOST;
+if (isLocal && host === 'postgres') {
+  host = 'localhost';
+}
+
 const username = process.env.DB_USER;
 const password = process.env.DB_PASSWORD;
 const database = process.env.DB_NAME;
@@ -33,7 +58,7 @@ if (!databaseUrl && (!host || !username || typeof password !== 'string' || passw
 export const AppDataSource = new DataSource({
   type: 'postgres',
   ...(databaseUrl ? { url: databaseUrl } : { host, port, username, password, database }),
-  entities: [TypeOrmUserEntitySchema, TypeOrmTenantEntitySchema, TypeOrmTenantBillingProfileEntitySchema, TypeOrmCustomerEntitySchema],
+  entities: [TypeOrmUserEntitySchema],
   migrations: [resolve(__dirname, '../persistence/typeorm/migrations/*.{ts,js}')],
   synchronize: false,
   logging: process.env.TYPEORM_LOGGING === 'true',

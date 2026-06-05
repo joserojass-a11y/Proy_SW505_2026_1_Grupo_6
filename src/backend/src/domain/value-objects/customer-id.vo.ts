@@ -1,9 +1,12 @@
+
 import { InvalidUserIdException } from '../exceptions/invalid-user-id.exception';
 
 const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
+
 export class CustomerId {
   private constructor(private readonly _value: string) {}
+
 
   static create(value: string): CustomerId {
     const normalizedValue = value.trim();
@@ -13,6 +16,7 @@ export class CustomerId {
     }
 
     return new CustomerId(normalizedValue);
+
   }
 
   get value(): string {
@@ -22,4 +26,5 @@ export class CustomerId {
   equals(other: CustomerId): boolean {
     return this._value === other.value;
   }
+
 }

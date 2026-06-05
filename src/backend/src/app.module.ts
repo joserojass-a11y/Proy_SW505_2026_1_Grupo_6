@@ -7,6 +7,7 @@ import { HealthModule } from './infrastructure/http/health.module';
 import { DatabaseModule } from './infrastructure/shared/database.module';
 import { AvailabilityModule } from './infrastructure/http/availability.module';
 import { NotificationsModule } from './infrastructure/http/notifications.module';
+import { BookingModule } from './infrastructure/http/booking.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { NotificationsModule } from './infrastructure/http/notifications.module'
     HealthModule,
     AvailabilityModule,
     NotificationsModule,
+    BookingModule,
   ],
 })
 export class AppModule {}
