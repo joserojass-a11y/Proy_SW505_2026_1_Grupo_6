@@ -58,7 +58,16 @@ if (!databaseUrl && (!host || !username || typeof password !== 'string' || passw
 export const AppDataSource = new DataSource({
   type: 'postgres',
   ...(databaseUrl ? { url: databaseUrl } : { host, port, username, password, database }),
-  entities: [TypeOrmUserEntitySchema],
+  entities: [
+    TypeOrmUserEntitySchema,
+    TypeOrmTenantEntitySchema,
+    TypeOrmTenantBillingProfileEntitySchema,
+    TypeOrmCustomerEntitySchema,
+    TypeOrmBookingEntitySchema,
+    TypeOrmBookingStatusHistoryEntitySchema,
+    TypeOrmBookingCancellationEntitySchema,
+    TypeOrmBookingRescheduleEntitySchema
+  ],
   migrations: [resolve(__dirname, '../persistence/typeorm/migrations/*.{ts,js}')],
   synchronize: false,
   logging: process.env.TYPEORM_LOGGING === 'true',

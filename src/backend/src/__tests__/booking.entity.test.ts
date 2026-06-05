@@ -1,12 +1,12 @@
-import { Booking } from '../../domain/entities/booking.entity';
-import { BookingId } from '../../domain/value-objects/booking-id.vo';
-import { BranchId } from '../../domain/value-objects/branch-id.vo';
-import { CustomerId } from '../../domain/value-objects/customer-id.vo';
-import { ServiceId } from '../../domain/value-objects/service-id.vo';
-import { TenantId } from '../../domain/value-objects/tenant-id.vo';
-import { UserId } from '../../domain/value-objects/user-id.vo';
-import { InvalidBookingDateRangeException } from '../../domain/exceptions/invalid-booking-date-range.exception';
-import { InvalidTransitionException } from '../../domain/exceptions/invalid-transition.exception';
+import { Booking } from '../domain/entities/booking.entity';
+import { BookingId } from '../domain/value-objects/booking-id.vo';
+import { BranchId } from '../domain/value-objects/branch-id.vo';
+import { CustomerId } from '../domain/value-objects/customer-id.vo';
+import { ServiceId } from '../domain/value-objects/service-id.vo';
+import { TenantId } from '../domain/value-objects/tenant-id.vo';
+import { UserId } from '../domain/value-objects/user-id.vo';
+import { InvalidBookingDateRangeException } from '../domain/exceptions/invalid-booking-date-range.exception';
+import { InvalidTransitionException } from '../domain/exceptions/invalid-transition.exception';
 
 describe('Booking Entity', () => {
   const createTestBooking = (overrides?: Partial<any>) => {
@@ -15,15 +15,15 @@ describe('Booking Entity', () => {
 
     return Booking.create({
       id: BookingId.create('test-id'),
-      tenantId: TenantId.create('tenant-1'),
-      branchId: BranchId.create('branch-1'),
-      serviceId: ServiceId.create('service-1'),
-      customerId: CustomerId.create('customer-1'),
+      tenantId: TenantId.create('123e4567-e89b-12d3-a456-426614174001'),
+      branchId: BranchId.create('123e4567-e89b-12d3-a456-426614174002'),
+      serviceId: ServiceId.create('123e4567-e89b-12d3-a456-426614174003'),
+      customerId: CustomerId.create('123e4567-e89b-12d3-a456-426614174004'),
       startsAt: now,
       endsAt: oneHourLater,
       customerTimezone: 'America/New_York',
       sourceChannel: 'WEB',
-      createdBy: UserId.create('user-1'),
+      createdBy: UserId.create('123e4567-e89b-12d3-a456-426614174005'),
       ...overrides,
     });
   };
@@ -44,15 +44,15 @@ describe('Booking Entity', () => {
       expect(() =>
         Booking.create({
           id: BookingId.create('test-id'),
-          tenantId: TenantId.create('tenant-1'),
-          branchId: BranchId.create('branch-1'),
-          serviceId: ServiceId.create('service-1'),
-          customerId: CustomerId.create('customer-1'),
+          tenantId: TenantId.create('123e4567-e89b-12d3-a456-426614174001'),
+          branchId: BranchId.create('123e4567-e89b-12d3-a456-426614174002'),
+          serviceId: ServiceId.create('123e4567-e89b-12d3-a456-426614174003'),
+          customerId: CustomerId.create('123e4567-e89b-12d3-a456-426614174004'),
           startsAt: now,
           endsAt: now, // Same as startsAt - invalid!
           customerTimezone: 'America/New_York',
           sourceChannel: 'WEB',
-          createdBy: UserId.create('user-1'),
+          createdBy: UserId.create('123e4567-e89b-12d3-a456-426614174005'),
         }),
       ).toThrow(InvalidBookingDateRangeException);
     });
@@ -154,14 +154,14 @@ describe('Booking Entity', () => {
       const twoHoursLater = new Date(now.getTime() + 7200000);
 
       const booking1 = createTestBooking({
-        serviceId: ServiceId.create('service-1'),
+        serviceId: ServiceId.create('123e4567-e89b-12d3-a456-426614174003'),
         startsAt: now,
         endsAt: twoHoursLater,
       });
 
       const booking2 = createTestBooking({
         id: BookingId.create('test-id-2'),
-        serviceId: ServiceId.create('service-2'), // Different service
+        serviceId: ServiceId.create('123e4567-e89b-12d3-a456-426614174013'), // Different service
         startsAt: now,
         endsAt: twoHoursLater,
       });
@@ -196,7 +196,7 @@ describe('Booking Entity', () => {
       const primitives = booking.toPrimitives();
 
       expect(primitives.id).toBe('test-id');
-      expect(primitives.tenantId).toBe('tenant-1');
+      expect(primitives.tenantId).toBe('123e4567-e89b-12d3-a456-426614174001');
       expect(primitives.status).toBe('PENDING');
       expect(primitives.createdAt).toBeDefined();
       expect(primitives.updatedAt).toBeDefined();
@@ -210,16 +210,16 @@ describe('Booking Entity', () => {
 
       const reconstituted = Booking.reconstitute({
         id: BookingId.create('test-id'),
-        tenantId: TenantId.create('tenant-1'),
-        branchId: BranchId.create('branch-1'),
-        serviceId: ServiceId.create('service-1'),
-        customerId: CustomerId.create('customer-1'),
+        tenantId: TenantId.create('123e4567-e89b-12d3-a456-426614174001'),
+        branchId: BranchId.create('123e4567-e89b-12d3-a456-426614174002'),
+        serviceId: ServiceId.create('123e4567-e89b-12d3-a456-426614174003'),
+        customerId: CustomerId.create('123e4567-e89b-12d3-a456-426614174004'),
         startsAt: now,
         endsAt: oneHourLater,
         customerTimezone: 'America/New_York',
         status: 'PENDING',
         sourceChannel: 'WEB',
-        createdBy: UserId.create('user-1'),
+        createdBy: UserId.create('123e4567-e89b-12d3-a456-426614174005'),
         createdAt: now,
         updatedAt: now,
       });

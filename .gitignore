@@ -17,6 +17,8 @@ secrets/
 frontend/dist/
 frontend/build/
 frontend-build/
+dist/
+
 
 # 4. Logs de depuración
 npm-debug.log*

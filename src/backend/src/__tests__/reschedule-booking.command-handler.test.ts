@@ -1,15 +1,15 @@
-import { RescheduleBookingCommandHandler } from '../../application/commands/reschedule-booking.command-handler';
-import { RescheduleBookingCommand } from '../../application/commands/reschedule-booking.command';
-import { Booking } from '../../domain/entities/booking.entity';
-import { BookingId } from '../../domain/value-objects/booking-id.vo';
-import { BranchId } from '../../domain/value-objects/branch-id.vo';
-import { CustomerId } from '../../domain/value-objects/customer-id.vo';
-import { ServiceId } from '../../domain/value-objects/service-id.vo';
-import { TenantId } from '../../domain/value-objects/tenant-id.vo';
-import { UserId } from '../../domain/value-objects/user-id.vo';
-import { BookingRepository } from '../../domain/repositories/booking.repository';
-import { IAvailabilityService } from '../../application/services/availability.interface';
-import { BookingNotFoundException } from '../../domain/exceptions/booking-not-found.exception';
+import { RescheduleBookingCommandHandler } from '../application/commands/reschedule-booking.command-handler';
+import { RescheduleBookingCommand } from '../application/commands/reschedule-booking.command';
+import { Booking } from '../domain/entities/booking.entity';
+import { BookingId } from '../domain/value-objects/booking-id.vo';
+import { BranchId } from '../domain/value-objects/branch-id.vo';
+import { CustomerId } from '../domain/value-objects/customer-id.vo';
+import { ServiceId } from '../domain/value-objects/service-id.vo';
+import { TenantId } from '../domain/value-objects/tenant-id.vo';
+import { UserId } from '../domain/value-objects/user-id.vo';
+import { BookingRepository } from '../domain/repositories/booking.repository';
+import { IAvailabilityService } from '../application/services/availability.interface';
+import { BookingNotFoundException } from '../domain/exceptions/booking-not-found.exception';
 
 class MockBookingRepository implements BookingRepository {
   bookings: Map<string, Booking> = new Map();
@@ -83,16 +83,16 @@ describe('RescheduleBookingCommandHandler', () => {
     const oneHourLater = new Date(now.getTime() + 3600000);
 
     const booking = Booking.create({
-      id: BookingId.create('booking-1'),
-      tenantId: TenantId.create('tenant-1'),
-      branchId: BranchId.create('branch-1'),
-      serviceId: ServiceId.create('service-1'),
-      customerId: CustomerId.create('customer-1'),
+      id: BookingId.create('123e4567-e89b-12d3-a456-426614174006'),
+      tenantId: TenantId.create('123e4567-e89b-12d3-a456-426614174001'),
+      branchId: BranchId.create('123e4567-e89b-12d3-a456-426614174002'),
+      serviceId: ServiceId.create('123e4567-e89b-12d3-a456-426614174003'),
+      customerId: CustomerId.create('123e4567-e89b-12d3-a456-426614174004'),
       startsAt: now,
       endsAt: oneHourLater,
       customerTimezone: 'America/New_York',
       sourceChannel: 'WEB',
-      createdBy: UserId.create('user-1'),
+      createdBy: UserId.create('123e4567-e89b-12d3-a456-426614174005'),
     });
 
     booking.confirm(); // Move to CONFIRMED state
@@ -102,11 +102,11 @@ describe('RescheduleBookingCommandHandler', () => {
     const newEnd = new Date(newStart.getTime() + 3600000); // +1 hour
 
     const command: RescheduleBookingCommand = {
-      bookingId: 'booking-1',
+      bookingId: '123e4567-e89b-12d3-a456-426614174006',
       newStartsAt: newStart,
       newEndsAt: newEnd,
       reason: 'Customer requested',
-      rescheduledBy: 'user-2',
+      rescheduledBy: '123e4567-e89b-12d3-a456-426614174009',
     };
 
     const result = await handler.execute(command);
@@ -121,10 +121,10 @@ describe('RescheduleBookingCommandHandler', () => {
     const oneHourLater = new Date(now.getTime() + 3600000);
 
     const command: RescheduleBookingCommand = {
-      bookingId: 'non-existent-id',
+      bookingId: '123e4567-e89b-12d3-a456-426614174006',
       newStartsAt: now,
       newEndsAt: oneHourLater,
-      rescheduledBy: 'user-2',
+      rescheduledBy: '123e4567-e89b-12d3-a456-426614174009',
     };
 
     await expect(handler.execute(command)).rejects.toThrow(BookingNotFoundException);
@@ -137,16 +137,16 @@ describe('RescheduleBookingCommandHandler', () => {
     const oneHourLater = new Date(now.getTime() + 3600000);
 
     const booking = Booking.create({
-      id: BookingId.create('booking-1'),
-      tenantId: TenantId.create('tenant-1'),
-      branchId: BranchId.create('branch-1'),
-      serviceId: ServiceId.create('service-1'),
-      customerId: CustomerId.create('customer-1'),
+      id: BookingId.create('123e4567-e89b-12d3-a456-426614174006'),
+      tenantId: TenantId.create('123e4567-e89b-12d3-a456-426614174001'),
+      branchId: BranchId.create('123e4567-e89b-12d3-a456-426614174002'),
+      serviceId: ServiceId.create('123e4567-e89b-12d3-a456-426614174003'),
+      customerId: CustomerId.create('123e4567-e89b-12d3-a456-426614174004'),
       startsAt: now,
       endsAt: oneHourLater,
       customerTimezone: 'America/New_York',
       sourceChannel: 'WEB',
-      createdBy: UserId.create('user-1'),
+      createdBy: UserId.create('123e4567-e89b-12d3-a456-426614174005'),
     });
 
     booking.confirm();
@@ -156,10 +156,10 @@ describe('RescheduleBookingCommandHandler', () => {
     const newEnd = new Date(newStart.getTime() + 3600000);
 
     const command: RescheduleBookingCommand = {
-      bookingId: 'booking-1',
+      bookingId: '123e4567-e89b-12d3-a456-426614174006',
       newStartsAt: newStart,
       newEndsAt: newEnd,
-      rescheduledBy: 'user-2',
+      rescheduledBy: '123e4567-e89b-12d3-a456-426614174009',
     };
 
     await expect(handler.execute(command)).rejects.toThrow('not available');

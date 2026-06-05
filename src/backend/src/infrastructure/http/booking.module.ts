@@ -6,13 +6,13 @@ import { RescheduleBookingCommandHandler } from '../../application/commands/resc
 import { GetBookingQueryHandler } from '../../application/queries/get-booking.query-handler';
 import { ListBookingsQueryHandler } from '../../application/queries/list-bookings.query-handler';
 import { INFRASTRUCTURE_TOKENS } from '../shared/infrastructure.tokens';
-import { typeormDataSourceProvider } from '../shared/typeorm.datasource.provider';
 import { TypeOrmBookingRepository } from '../persistence/typeorm/typeorm-booking.repository';
 import { BookingController } from './controllers/booking.controller';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { Reflector } from '@nestjs/core';
 import { AvailabilityServiceMock } from '../services/availability-service.mock';
 import { IAvailabilityService } from '../../application/services/availability.interface';
+import { DatabaseModule } from '../shared/database.module';
 
 const bookingRepositoryProvider: Provider = {
   provide: INFRASTRUCTURE_TOKENS.BOOKING_REPOSITORY,
@@ -58,9 +58,9 @@ const listBookingsHandlerProvider: Provider = {
 };
 
 @Module({
+  imports: [DatabaseModule],
   controllers: [BookingController],
   providers: [
-    typeormDataSourceProvider,
     bookingRepositoryProvider,
     availabilityServiceProvider,
     createBookingHandlerProvider,

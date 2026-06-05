@@ -1,4 +1,4 @@
-import { AvailabilitySlot, IAvailabilityService } from './availability.interface';
+import { AvailabilitySlot, IAvailabilityService } from '../../application/services/availability.interface';
 
 /**
  * Mock implementation of availability service

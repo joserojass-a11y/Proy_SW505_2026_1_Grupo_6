@@ -1,4 +1,5 @@
 import { BookingRepository } from '../../domain/repositories/booking.repository';
+import { Booking } from '../../domain/entities/booking.entity';
 import { TenantId } from '../../domain/value-objects/tenant-id.vo';
 import { ServiceId } from '../../domain/value-objects/service-id.vo';
 import { ListBookingsQuery } from './list-bookings.query';
@@ -8,7 +9,7 @@ export class ListBookingsQueryHandler {
   constructor(private readonly bookingRepository: BookingRepository) {}
 
   async execute(query: ListBookingsQuery): Promise<BookingDetailDto[]> {
-    let bookings = [];
+    let bookings: Booking[] = [];
 
     // Query based on filters
     if (query.serviceId) {

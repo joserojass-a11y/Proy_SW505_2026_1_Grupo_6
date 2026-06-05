@@ -1,9 +1,9 @@
-import { CreateBookingCommandHandler } from '../../application/commands/create-booking.command-handler';
-import { CreateBookingCommand } from '../../application/commands/create-booking.command';
-import { BookingRepository } from '../../domain/repositories/booking.repository';
-import { IAvailabilityService } from '../../application/services/availability.interface';
-import { Booking } from '../../domain/entities/booking.entity';
-import { BookingAlreadyExistsException } from '../../domain/exceptions/booking-already-exists.exception';
+import { CreateBookingCommandHandler } from '../application/commands/create-booking.command-handler';
+import { CreateBookingCommand } from '../application/commands/create-booking.command';
+import { BookingRepository } from '../domain/repositories/booking.repository';
+import { IAvailabilityService } from '../application/services/availability.interface';
+import { Booking } from '../domain/entities/booking.entity';
+import { BookingAlreadyExistsException } from '../domain/exceptions/booking-already-exists.exception';
 
 // Mock implementations
 class MockBookingRepository implements BookingRepository {
@@ -85,15 +85,15 @@ describe('CreateBookingCommandHandler', () => {
     const oneHourLater = new Date(now.getTime() + 3600000);
 
     const command: CreateBookingCommand = {
-      tenantId: 'tenant-1',
-      branchId: 'branch-1',
-      serviceId: 'service-1',
-      customerId: 'customer-1',
+      tenantId: '123e4567-e89b-12d3-a456-426614174001',
+      branchId: '123e4567-e89b-12d3-a456-426614174002',
+      serviceId: '123e4567-e89b-12d3-a456-426614174003',
+      customerId: '123e4567-e89b-12d3-a456-426614174004',
       startsAt: now,
       endsAt: oneHourLater,
       customerTimezone: 'America/New_York',
       sourceChannel: 'WEB',
-      createdBy: 'user-1',
+      createdBy: '123e4567-e89b-12d3-a456-426614174005',
     };
 
     const result = await handler.execute(command);
@@ -111,15 +111,15 @@ describe('CreateBookingCommandHandler', () => {
     const oneHourLater = new Date(now.getTime() + 3600000);
 
     const command: CreateBookingCommand = {
-      tenantId: 'tenant-1',
-      branchId: 'branch-1',
-      serviceId: 'service-1',
-      customerId: 'customer-1',
+      tenantId: '123e4567-e89b-12d3-a456-426614174001',
+      branchId: '123e4567-e89b-12d3-a456-426614174002',
+      serviceId: '123e4567-e89b-12d3-a456-426614174003',
+      customerId: '123e4567-e89b-12d3-a456-426614174004',
       startsAt: now,
       endsAt: oneHourLater,
       customerTimezone: 'America/New_York',
       sourceChannel: 'WEB',
-      createdBy: 'user-1',
+      createdBy: '123e4567-e89b-12d3-a456-426614174005',
     };
 
     await expect(handler.execute(command)).rejects.toThrow('not available');
@@ -132,15 +132,15 @@ describe('CreateBookingCommandHandler', () => {
     const oneHourLater = new Date(now.getTime() + 3600000);
 
     const command: CreateBookingCommand = {
-      tenantId: 'tenant-1',
-      branchId: 'branch-1',
-      serviceId: 'service-1',
-      customerId: 'customer-1',
+      tenantId: '123e4567-e89b-12d3-a456-426614174001',
+      branchId: '123e4567-e89b-12d3-a456-426614174002',
+      serviceId: '123e4567-e89b-12d3-a456-426614174003',
+      customerId: '123e4567-e89b-12d3-a456-426614174004',
       startsAt: now,
       endsAt: oneHourLater,
       customerTimezone: 'America/New_York',
       sourceChannel: 'WEB',
-      createdBy: 'user-1',
+      createdBy: '123e4567-e89b-12d3-a456-426614174005',
     };
 
     await expect(handler.execute(command)).rejects.toThrow(BookingAlreadyExistsException);
@@ -150,15 +150,15 @@ describe('CreateBookingCommandHandler', () => {
     const now = new Date();
 
     const command: CreateBookingCommand = {
-      tenantId: 'tenant-1',
-      branchId: 'branch-1',
-      serviceId: 'service-1',
-      customerId: 'customer-1',
+      tenantId: '123e4567-e89b-12d3-a456-426614174001',
+      branchId: '123e4567-e89b-12d3-a456-426614174002',
+      serviceId: '123e4567-e89b-12d3-a456-426614174003',
+      customerId: '123e4567-e89b-12d3-a456-426614174004',
       startsAt: now,
       endsAt: now, // Invalid - same as startsAt
       customerTimezone: 'America/New_York',
       sourceChannel: 'WEB',
-      createdBy: 'user-1',
+      createdBy: '123e4567-e89b-12d3-a456-426614174005',
     };
 
     await expect(handler.execute(command)).rejects.toThrow('Invalid date range');

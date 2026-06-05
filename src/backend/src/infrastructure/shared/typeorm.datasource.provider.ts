@@ -6,6 +6,10 @@ import { TypeOrmUserEntitySchema } from '../persistence/typeorm/entities/typeorm
 import { TypeOrmTenantEntitySchema } from '../persistence/typeorm/entities/typeorm-tenant.entity';
 import { TypeOrmTenantBillingProfileEntitySchema } from '../persistence/typeorm/entities/typeorm-tenant-billing-profile.entity';
 import { TypeOrmCustomerEntitySchema } from '../persistence/typeorm/entities/typeorm-customer.entity';
+import { TypeOrmBookingEntitySchema } from '../persistence/typeorm/entities/typeorm-booking.entity';
+import { TypeOrmBookingStatusHistoryEntitySchema } from '../persistence/typeorm/entities/typeorm-booking-status-history.entity';
+import { TypeOrmBookingCancellationEntitySchema } from '../persistence/typeorm/entities/typeorm-booking-cancellation.entity';
+import { TypeOrmBookingRescheduleEntitySchema } from '../persistence/typeorm/entities/typeorm-booking-reschedule.entity';
 
 function buildDataSourceOptions(): DataSourceOptions {
   const isDocker = existsSync('/.dockerenv') || process.env.IS_DOCKER === 'true';
@@ -40,7 +44,16 @@ function buildDataSourceOptions(): DataSourceOptions {
     return {
       type: 'postgres',
       url: databaseUrl,
-      entities: [TypeOrmUserEntitySchema, TypeOrmTenantEntitySchema, TypeOrmTenantBillingProfileEntitySchema, TypeOrmCustomerEntitySchema],
+      entities: [
+        TypeOrmUserEntitySchema,
+        TypeOrmTenantEntitySchema,
+        TypeOrmTenantBillingProfileEntitySchema,
+        TypeOrmCustomerEntitySchema,
+        TypeOrmBookingEntitySchema,
+        TypeOrmBookingStatusHistoryEntitySchema,
+        TypeOrmBookingCancellationEntitySchema,
+        TypeOrmBookingRescheduleEntitySchema
+      ],
       migrations: [__dirname + '/persistence/typeorm/migrations/*.{ts,js}'],
       migrationsRun: true,
       synchronize: false,
@@ -61,7 +74,16 @@ function buildDataSourceOptions(): DataSourceOptions {
     username,
     password,
     database,
-    entities: [TypeOrmUserEntitySchema, TypeOrmTenantEntitySchema, TypeOrmTenantBillingProfileEntitySchema, TypeOrmCustomerEntitySchema],
+    entities: [
+      TypeOrmUserEntitySchema,
+      TypeOrmTenantEntitySchema,
+      TypeOrmTenantBillingProfileEntitySchema,
+      TypeOrmCustomerEntitySchema,
+      TypeOrmBookingEntitySchema,
+      TypeOrmBookingStatusHistoryEntitySchema,
+      TypeOrmBookingCancellationEntitySchema,
+      TypeOrmBookingRescheduleEntitySchema
+    ],
     migrations: [__dirname + '/persistence/typeorm/migrations/*.{ts,js}'],
     migrationsRun: true,
     synchronize: false,

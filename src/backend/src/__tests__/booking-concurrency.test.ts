@@ -23,15 +23,15 @@
  * ✓ Proper transaction handling
  */
 
-import { CreateBookingCommandHandler } from '../../application/commands/create-booking.command-handler';
-import { CreateBookingCommand } from '../../application/commands/create-booking.command';
-import { Booking } from '../../domain/entities/booking.entity';
-import { BookingRepository } from '../../domain/repositories/booking.repository';
-import { IAvailabilityService } from '../../application/services/availability.interface';
-import { BookingId } from '../../domain/value-objects/booking-id.vo';
-import { ServiceId } from '../../domain/value-objects/service-id.vo';
-import { TenantId } from '../../domain/value-objects/tenant-id.vo';
-import { BookingAlreadyExistsException } from '../../domain/exceptions/booking-already-exists.exception';
+import { CreateBookingCommandHandler } from '../application/commands/create-booking.command-handler';
+import { CreateBookingCommand } from '../application/commands/create-booking.command';
+import { Booking } from '../domain/entities/booking.entity';
+import { BookingRepository } from '../domain/repositories/booking.repository';
+import { IAvailabilityService } from '../application/services/availability.interface';
+import { BookingId } from '../domain/value-objects/booking-id.vo';
+import { ServiceId } from '../domain/value-objects/service-id.vo';
+import { TenantId } from '../domain/value-objects/tenant-id.vo';
+import { BookingAlreadyExistsException } from '../domain/exceptions/booking-already-exists.exception';
 import { randomUUID } from 'crypto';
 
 /**
@@ -59,7 +59,7 @@ class ConcurrencyTestBookingRepository implements BookingRepository {
     // Simulate finding conflicts
     return Array.from(this.bookings.values()).filter(
       (b) =>
-        b.serviceId.value === 'service-test-concurrent' &&
+        b.serviceId.value === '123e4567-e89b-12d3-a456-426614174003' &&
         b.status.value !== 'CANCELLED' &&
         b.status.value !== 'RESCHEDULED',
     );
@@ -154,7 +154,7 @@ class ConcurrencyTestBookingRepository implements BookingRepository {
 
   getSuccessfulBookings() {
     return Array.from(this.bookings.values()).filter(
-      (b) => b.serviceId.value === 'service-test-concurrent' && !b.status.isCancelled(),
+      (b) => b.serviceId.value === '123e4567-e89b-12d3-a456-426614174003' && !b.status.isCancelled(),
     );
   }
 }
@@ -182,15 +182,15 @@ describe('Concurrency Test: Multiple Concurrent Booking Attempts', () => {
     // Create 100 concurrent booking requests
     const concurrentRequests = Array.from({ length: 100 }, (_, index) => {
       const command: CreateBookingCommand = {
-        tenantId: 'tenant-concurrent-test',
-        branchId: 'branch-concurrent-test',
-        serviceId: 'service-test-concurrent',
-        customerId: `customer-${index}`, // Different customers
+        tenantId: '123e4567-e89b-12d3-a456-426614174001',
+        branchId: '123e4567-e89b-12d3-a456-426614174002',
+        serviceId: '123e4567-e89b-12d3-a456-426614174003',
+        customerId: '123e4567-e89b-12d3-a456-' + String(index).padStart(12, '0'), // Different customers
         startsAt,
         endsAt,
         customerTimezone: 'America/New_York',
         sourceChannel: 'WEB',
-        createdBy: `user-${index}`,
+        createdBy: '123e4567-e89b-12d3-b456-' + String(index).padStart(12, '0'),
       };
 
       return handler.execute(command);
@@ -214,7 +214,7 @@ describe('Concurrency Test: Multiple Concurrent Booking Attempts', () => {
     console.log(`Successful: ${successCount}`);
     console.log(`Failed: ${failureCount}`);
     console.log(`Successful bookings in DB: ${successfulBookings.length}`);
-    console.log(`===============================\n`);
+    console.log('===============================\n');
 
     // THE PROOF THAT NO DOUBLE BOOKINGS EXIST
     expect(successfulBookings.length).toBe(1);
@@ -225,7 +225,7 @@ describe('Concurrency Test: Multiple Concurrent Booking Attempts', () => {
     const booking = successfulBookings[0];
     expect(booking.startsAt).toEqual(startsAt);
     expect(booking.endsAt).toEqual(endsAt);
-    expect(booking.serviceId.value).toBe('service-test-concurrent');
+    expect(booking.serviceId.value).toBe('123e4567-e89b-12d3-a456-426614174003');
   }, 30000); // 30 second timeout for concurrency test
 
   it('should handle concurrent requests for different time slots independently', async () => {
@@ -241,15 +241,15 @@ describe('Concurrency Test: Multiple Concurrent Booking Attempts', () => {
       const endsAt = new Date(startsAt.getTime() + 3600000);
 
       const command: CreateBookingCommand = {
-        tenantId: 'tenant-different-slots',
-        branchId: 'branch-different-slots',
-        serviceId: 'service-different-slots',
-        customerId: `customer-${index}`,
+        tenantId: '123e4567-e89b-12d3-a456-426614174001',
+        branchId: '123e4567-e89b-12d3-a456-426614174002',
+        serviceId: '123e4567-e89b-12d3-a456-426614174003',
+        customerId: '123e4567-e89b-12d3-a456-' + String(index).padStart(12, '0'),
         startsAt,
         endsAt,
         customerTimezone: 'America/New_York',
         sourceChannel: 'WEB',
-        createdBy: `user-${index}`,
+        createdBy: '123e4567-e89b-12d3-b456-' + String(index).padStart(12, '0'),
       };
 
       return handler.execute(command);
