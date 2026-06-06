@@ -6,7 +6,7 @@ import { UserId } from '../../../domain/value-objects/user-id.vo';
 import { TypeOrmTenantEntity } from './entities/typeorm-tenant.entity';
 
 export class TypeOrmTenantRepository implements TenantRepository {
-  constructor(private readonly dataSource: DataSource) {}
+  constructor(private readonly dataSource: DataSource) { }
 
   private get repository() {
     return this.dataSource.getRepository(TypeOrmTenantEntity);
@@ -40,6 +40,7 @@ export class TypeOrmTenantRepository implements TenantRepository {
   private toDomain(entity: TypeOrmTenantEntity): Tenant {
     return Tenant.reconstitute({
       id: entity.id,
+      zoneId: entity.zoneId,
       countryCode: entity.countryCode,
       status: entity.status,
       subdomain: entity.subdomain,
@@ -56,6 +57,7 @@ export class TypeOrmTenantRepository implements TenantRepository {
     const entity = new TypeOrmTenantEntity();
 
     entity.id = primitives.id;
+    entity.zoneId = primitives.zoneId;
     entity.countryCode = primitives.countryCode;
     entity.status = primitives.status;
     entity.subdomain = primitives.subdomain;

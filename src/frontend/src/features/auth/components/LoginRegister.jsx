@@ -10,10 +10,12 @@ function LoginRegister() {
   const setSession = useAppStore((state) => state.setSession);
   const showAlert = useAppStore((state) => state.showAlert);
   const setCustomerProfile = useAppStore((state) => state.setCustomerProfile);
+  const zones = useAppStore((state) => state.zones);
 
   const [authEmail, setAuthEmail] = useState('');
   const [authPassword, setAuthPassword] = useState('');
   const [authFullName, setAuthFullName] = useState('');
+  const [authZoneId, setAuthZoneId] = useState('');
   const [isRegisterMode, setIsRegisterMode] = useState(false);
   const [registerRole, setRegisterRole] = useState('CLIENT'); // 'OWNER' o 'CLIENT'
 
@@ -22,6 +24,9 @@ function LoginRegister() {
     try {
       if (isRegisterMode) {
         await authService.register(authEmail, authPassword, authFullName, registerRole);
+        if (registerRole === 'CLIENT' && authZoneId) {
+            localStorage.setItem('tempZoneId', authZoneId);
+        }
         showAlert('Usuario registrado correctamente. Inicia sesión ahora.');
         setIsRegisterMode(false);
       } else {
@@ -87,6 +92,23 @@ function LoginRegister() {
                   <option value="OWNER">Propietario de Negocio (Administra empresa)</option>
                 </select>
               </div>
+              
+              {registerRole === 'CLIENT' && (
+                <div className="form-group">
+                  <label className="label">Zona / País</label>
+                  <select 
+                    required 
+                    value={authZoneId} 
+                    onChange={(e) => setAuthZoneId(e.target.value)} 
+                    className="select"
+                  >
+                    <option value="">-- Seleccionar Zona --</option>
+                    {zones.map(z => (
+                      <option key={z.id} value={z.id}>{z.name} ({z.code})</option>
+                    ))}
+                  </select>
+                </div>
+              )}
             </>
           )}
           <div className="form-group">

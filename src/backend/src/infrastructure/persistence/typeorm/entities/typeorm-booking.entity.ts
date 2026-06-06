@@ -3,8 +3,8 @@ import { EntitySchema } from 'typeorm';
 export interface TypeOrmBookingProps {
   id: string;
   tenantId: string;
-  branchId: string;
   serviceId: string;
+  resourceId: string;
   customerId: string;
   startsAt: Date;
   endsAt: Date;
@@ -23,6 +23,7 @@ export class TypeOrmBookingEntity implements TypeOrmBookingProps {
   tenantId!: string;
   branchId!: string;
   serviceId!: string;
+  resourceId!: string;
   customerId!: string;
   startsAt!: Date;
   endsAt!: Date;
@@ -59,6 +60,10 @@ export const TypeOrmBookingEntitySchema = new EntitySchema<TypeOrmBookingEntity>
     serviceId: {
       type: 'uuid',
       name: 'service_id',
+    },
+    resourceId: {
+      type: 'uuid',
+      name: 'resource_id',
     },
     customerId: {
       type: 'uuid',
@@ -137,8 +142,12 @@ export const TypeOrmBookingEntitySchema = new EntitySchema<TypeOrmBookingEntity>
       columns: ['startsAt', 'endsAt'],
     },
     {
-      name: 'idx_booking_service_starts_ends',
-      columns: ['serviceId', 'startsAt', 'endsAt'],
+      name: 'idx_booking_resource_id',
+      columns: ['resourceId'],
+    },
+    {
+      name: 'idx_booking_resource_starts_ends',
+      columns: ['resourceId', 'startsAt', 'endsAt'],
     },
   ],
 });

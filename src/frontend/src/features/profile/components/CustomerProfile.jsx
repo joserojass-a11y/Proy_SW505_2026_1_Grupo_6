@@ -14,6 +14,8 @@ function CustomerProfile() {
   const [custLastName, setCustLastName] = useState('');
   const [custPhone, setCustPhone] = useState('');
   const [custTimezone, setCustTimezone] = useState('America/Lima');
+  const [custZoneId, setCustZoneId] = useState(localStorage.getItem('tempZoneId') || '');
+  const zones = useAppStore((state) => state.zones);
 
   const handleCreateCustomer = async (e) => {
     e.preventDefault();
@@ -24,9 +26,11 @@ function CustomerProfile() {
         lastName: custLastName,
         email: email,
         phone: custPhone,
-        timezone: custTimezone
+        timezone: custTimezone,
+        zoneId: custZoneId
       });
       
+      localStorage.removeItem('tempZoneId');
       setCustomerProfile(profile);
       showAlert('Perfil de cliente creado.');
     } catch (err) {
@@ -84,6 +88,21 @@ function CustomerProfile() {
                   </option>
                 );
               })}
+            </select>
+          </div>
+          
+          <div className="form-group">
+            <label className="label">Tu Zona Geográfica</label>
+            <select 
+              required 
+              value={custZoneId} 
+              onChange={(e) => setCustZoneId(e.target.value)} 
+              className="select"
+            >
+              <option value="">-- Seleccionar Zona --</option>
+              {zones.map(z => (
+                <option key={z.id} value={z.id}>{z.name} ({z.code})</option>
+              ))}
             </select>
           </div>
           

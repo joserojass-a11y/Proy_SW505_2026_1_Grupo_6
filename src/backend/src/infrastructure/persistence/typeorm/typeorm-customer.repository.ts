@@ -36,6 +36,7 @@ export class TypeOrmCustomerRepository implements CustomerRepository {
     return Customer.reconstitute({
       id: entity.id,
       tenantId: entity.tenantId,
+      zoneId: entity.zoneId,
       userId: entity.userId,
       firstName: entity.firstName,
       lastName: entity.lastName,
@@ -55,6 +56,7 @@ export class TypeOrmCustomerRepository implements CustomerRepository {
 
     entity.id = primitives.id;
     entity.tenantId = primitives.tenantId;
+    entity.zoneId = primitives.zoneId;
     entity.userId = primitives.userId;
     entity.firstName = primitives.firstName;
     entity.lastName = primitives.lastName;

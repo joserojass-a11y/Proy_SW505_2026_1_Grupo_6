@@ -12,11 +12,14 @@ function TenantManager() {
   const [tenantName, setTenantName] = useState('');
   const [tenantSubdomain, setTenantSubdomain] = useState('');
   const [tenantCountry, setTenantCountry] = useState('PE');
+  const [tenantZoneId, setTenantZoneId] = useState('');
+  const zones = useAppStore((state) => state.zones);
 
   const handleCreateTenant = async (e) => {
     e.preventDefault();
     try {
       const newTenant = await profileService.createTenant({
+        zoneId: tenantZoneId,
         countryCode: tenantCountry,
         subdomain: tenantSubdomain,
         name: tenantName,
@@ -48,6 +51,20 @@ function TenantManager() {
             className="input" 
             placeholder="Mi Peluquería S.A.C."
           />
+        </div>
+        <div className="form-group">
+          <label className="label">Zona / País</label>
+          <select 
+            required 
+            value={tenantZoneId} 
+            onChange={(e) => setTenantZoneId(e.target.value)} 
+            className="select"
+          >
+            <option value="">-- Seleccionar Zona --</option>
+            {zones.map(z => (
+              <option key={z.id} value={z.id}>{z.name} ({z.code})</option>
+            ))}
+          </select>
         </div>
         <div className="form-group">
           <label className="label">Subdominio de Acceso</label>

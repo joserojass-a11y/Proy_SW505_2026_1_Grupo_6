@@ -1,8 +1,9 @@
 import api from '../../../shared/services/api';
 
 export const profileService = {
-  createTenant: async ({ countryCode, subdomain, name }) => {
+  createTenant: async ({ zoneId, countryCode, subdomain, name }) => {
     const res = await api.post('/tenants', {
+      zoneId,
       countryCode,
       subdomain,
       name,
@@ -19,9 +20,10 @@ export const profileService = {
     return res.data;
   },
 
-  createCustomer: async ({ tenantId, firstName, lastName, email, phone, timezone }) => {
+  createCustomer: async ({ tenantId, zoneId, firstName, lastName, email, phone, timezone }) => {
     const res = await api.post('/customers', {
       tenantId,
+      zoneId,
       firstName,
       lastName,
       email,

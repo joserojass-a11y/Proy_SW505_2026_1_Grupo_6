@@ -11,6 +11,7 @@ const useAppStore = create((set) => ({
   customerProfile: JSON.parse(localStorage.getItem('customerProfile') || 'null'),
 
   // --- Estados de Negocio (Persistidos en LocalStorage) ---
+  zones: JSON.parse(localStorage.getItem('zones') || '[]'),
   tenants: JSON.parse(localStorage.getItem('tenants') || '[]'),
   activeTenant: JSON.parse(localStorage.getItem('activeTenant') || 'null'),
   services: JSON.parse(localStorage.getItem('services') || '[]'),
@@ -64,6 +65,11 @@ const useAppStore = create((set) => ({
   },
 
   // --- Acciones de Negocio ---
+  setZones: (zones) => {
+    localStorage.setItem('zones', JSON.stringify(zones));
+    set({ zones });
+  },
+
   setTenants: (tenants) => {
     localStorage.setItem('tenants', JSON.stringify(tenants));
     set({ tenants });

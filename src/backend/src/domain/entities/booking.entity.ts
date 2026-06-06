@@ -3,6 +3,7 @@ import { BookingStatus, BookingStatusValue } from '../value-objects/booking-stat
 import { BranchId } from '../value-objects/branch-id.vo';
 import { CustomerId } from '../value-objects/customer-id.vo';
 import { ServiceId } from '../value-objects/service-id.vo';
+import { ResourceId } from '../value-objects/resource-id.vo';
 import { TenantId } from '../value-objects/tenant-id.vo';
 import { UserId } from '../value-objects/user-id.vo';
 import { BookingNotFoundException } from '../exceptions/booking-not-found.exception';
@@ -14,6 +15,7 @@ export interface BookingPrimitives {
   tenantId: string;
   branchId: string;
   serviceId: string;
+  resourceId: string;
   customerId: string;
   startsAt: Date;
   endsAt: Date;
@@ -32,6 +34,7 @@ export interface CreateBookingProps {
   tenantId: TenantId | string;
   branchId: BranchId | string;
   serviceId: ServiceId | string;
+  resourceId: ResourceId | string;
   customerId: CustomerId | string;
   startsAt: Date;
   endsAt: Date;
@@ -50,6 +53,7 @@ export interface ReconstituteBookingProps {
   tenantId: TenantId | string;
   branchId: BranchId | string;
   serviceId: ServiceId | string;
+  resourceId: ResourceId | string;
   customerId: CustomerId | string;
   startsAt: Date;
   endsAt: Date;
@@ -69,6 +73,7 @@ export class Booking {
     private _tenantId: TenantId,
     private _branchId: BranchId,
     private _serviceId: ServiceId,
+    private _resourceId: ResourceId,
     private _customerId: CustomerId,
     private _startsAt: Date,
     private _endsAt: Date,
@@ -80,7 +85,7 @@ export class Booking {
     private _createdBy?: UserId,
     private _createdAt?: Date,
     private _updatedAt?: Date,
-  ) {}
+  ) { }
 
   static create(props: CreateBookingProps): Booking {
     if (props.startsAt >= props.endsAt) {
@@ -92,6 +97,7 @@ export class Booking {
       Booking.toTenantId(props.tenantId),
       Booking.toBranchId(props.branchId),
       Booking.toServiceId(props.serviceId),
+      Booking.toResourceId(props.resourceId),
       Booking.toCustomerId(props.customerId),
       props.startsAt,
       props.endsAt,
@@ -112,6 +118,7 @@ export class Booking {
       Booking.toTenantId(props.tenantId),
       Booking.toBranchId(props.branchId),
       Booking.toServiceId(props.serviceId),
+      Booking.toResourceId(props.resourceId),
       Booking.toCustomerId(props.customerId),
       props.startsAt,
       props.endsAt,
@@ -140,6 +147,10 @@ export class Booking {
 
   get serviceId(): ServiceId {
     return this._serviceId;
+  }
+
+  get resourceId(): ResourceId {
+    return this._resourceId;
   }
 
   get customerId(): CustomerId {
@@ -233,6 +244,7 @@ export class Booking {
       tenantId: this._tenantId.value,
       branchId: this._branchId.value,
       serviceId: this._serviceId.value,
+      resourceId: this._resourceId.value,
       customerId: this._customerId.value,
       startsAt: this._startsAt,
       endsAt: this._endsAt,
@@ -273,6 +285,13 @@ export class Booking {
       return value;
     }
     return ServiceId.create(String(value));
+  }
+
+  private static toResourceId(value: unknown): ResourceId {
+    if (value instanceof ResourceId) {
+      return value;
+    }
+    return ResourceId.create(String(value));
   }
 
   private static toCustomerId(value: unknown): CustomerId {

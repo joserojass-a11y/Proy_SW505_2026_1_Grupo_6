@@ -3,10 +3,12 @@ import { CustomerId } from '../value-objects/customer-id.vo';
 import { Email } from '../value-objects/email.vo';
 import { FullName } from '../value-objects/full-name.vo';
 import { UserId } from '../value-objects/user-id.vo';
+import { ZoneId } from '../value-objects/zone-id.vo';
 
 export interface CustomerPrimitives {
   id: string;
   tenantId: string;
+  zoneId: string;
   userId: string;
   firstName: string;
   lastName: string;
@@ -22,6 +24,7 @@ export interface CustomerPrimitives {
 export interface CreateCustomerProps {
   id?: CustomerId | string;
   tenantId: TenantId | string;
+  zoneId: ZoneId | string;
   userId: UserId | string;
   firstName: string;
   lastName: string;
@@ -37,6 +40,7 @@ export interface CreateCustomerProps {
 export interface ReconstituteCustomerProps {
   id: CustomerId | string;
   tenantId: TenantId | string;
+  zoneId: ZoneId | string;
   userId: UserId | string;
   firstName: string;
   lastName: string;
@@ -53,6 +57,7 @@ export class Customer {
   private constructor(
     private _id: CustomerId,
     private _tenantId: TenantId,
+    private _zoneId: ZoneId,
     private _userId: UserId,
     private _firstName: string,
     private _lastName: string,
@@ -69,6 +74,7 @@ export class Customer {
     return new Customer(
       Customer.toCustomerId(props.id),
       Customer.toTenantId(props.tenantId),
+      Customer.toZoneId(props.zoneId),
       Customer.toUserId(props.userId),
       Customer.normalizeText(props.firstName),
       Customer.normalizeText(props.lastName),
@@ -86,6 +92,7 @@ export class Customer {
     return new Customer(
       Customer.toCustomerId(props.id),
       Customer.toTenantId(props.tenantId),
+      Customer.toZoneId(props.zoneId),
       Customer.toUserId(props.userId),
       Customer.normalizeText(props.firstName),
       Customer.normalizeText(props.lastName),
@@ -105,6 +112,10 @@ export class Customer {
 
   get tenantId(): TenantId {
     return this._tenantId;
+  }
+
+  get zoneId(): ZoneId {
+    return this._zoneId;
   }
 
   get userId(): UserId {
@@ -195,6 +206,7 @@ export class Customer {
     return {
       id: this._id.value,
       tenantId: this._tenantId.value,
+      zoneId: this._zoneId.value,
       userId: this._userId.value,
       firstName: this._firstName,
       lastName: this._lastName,
@@ -218,6 +230,10 @@ export class Customer {
 
   private static toTenantId(value: TenantId | string): TenantId {
     return value instanceof TenantId ? value : TenantId.create(value);
+  }
+
+  private static toZoneId(value: ZoneId | string): ZoneId {
+    return value instanceof ZoneId ? value : ZoneId.create(value);
   }
 
   private static toUserId(value: UserId | string): UserId {

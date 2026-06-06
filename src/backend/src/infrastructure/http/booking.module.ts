@@ -8,6 +8,7 @@ import { ListBookingsQueryHandler } from '../../application/queries/list-booking
 import { INFRASTRUCTURE_TOKENS } from '../shared/infrastructure.tokens';
 import { TypeOrmBookingRepository } from '../persistence/typeorm/typeorm-booking.repository';
 import { BookingController } from './controllers/booking.controller';
+import { SlotController } from './controllers/slot.controller';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { Reflector } from '@nestjs/core';
 import { AvailabilityServiceMock } from '../services/availability-service.mock';
@@ -84,7 +85,7 @@ const listBookingsHandlerProvider: Provider = {
 
 @Module({
   imports: [DatabaseModule],
-  controllers: [BookingController],
+  controllers: [BookingController, SlotController],
   providers: [
     bookingRepositoryProvider,
     availabilityServiceProvider,

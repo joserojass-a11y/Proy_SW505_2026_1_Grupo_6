@@ -5,6 +5,7 @@ import { BookingId } from '../../../domain/value-objects/booking-id.vo';
 import { ServiceId } from '../../../domain/value-objects/service-id.vo';
 import { TenantId } from '../../../domain/value-objects/tenant-id.vo';
 import { TypeOrmBookingEntity } from './entities/typeorm-booking.entity';
+import { TypeOrmScheduleSlotEntity } from './entities/typeorm-schedule-slot.entity';
 import { BookingAlreadyExistsException } from '../../../domain/exceptions/booking-already-exists.exception';
 
 export class TypeOrmBookingRepository implements BookingRepository {
@@ -59,7 +60,7 @@ export class TypeOrmBookingRepository implements BookingRepository {
     // Using query builder to support FOR UPDATE
     const conflictingEntities = await this.repository
       .createQueryBuilder('booking')
-      .where('booking.serviceId = :serviceId', { serviceId: serviceId.value })
+      .where('booking.resourceId = :resourceId', { resourceId: serviceId.value }) // THIS LOGIC MOVES TO SLOTS
       .andWhere('booking.status NOT IN (:...statuses)', {
         statuses: ['CANCELLED', 'RESCHEDULED'],
       })
@@ -127,10 +128,24 @@ export class TypeOrmBookingRepository implements BookingRepository {
     await queryRunner.startTransaction('SERIALIZABLE');
 
     try {
-      // Pessimistic write lock on overlapping bookings
-      const conflictingBookings = await this.findConflictingBookingsForUpdateWithQueryRunner(
+      // 1. Ensure the slot row exists to be locked
+      await queryRunner.manager
+        .createQueryBuilder()
+        .insert()
+        .into(TypeOrmScheduleSlotEntity)
+        .values({
+           resourceId: booking.resourceId.value,
+           startsAt: booking.startsAt,
+           endsAt: booking.endsAt,
+           status: 'AVAILABLE'
+        })
+        .orIgnore()
+        .execute();
+
+      // 2. Pessimistic write lock on the slot
+      const conflictingBookings = await this.findConflictingSlotsForUpdateWithQueryRunner(
         queryRunner,
-        booking.serviceId,
+        booking.resourceId.value,
         booking.startsAt,
         booking.endsAt,
       );
@@ -143,7 +158,19 @@ export class TypeOrmBookingRepository implements BookingRepository {
         throw new BookingAlreadyExistsException(booking.serviceId.value, booking.startsAt, booking.endsAt);
       }
 
-      // Insert the booking
+      // 3. Mark the slot as BOOKED
+      await queryRunner.manager
+        .createQueryBuilder()
+        .update(TypeOrmScheduleSlotEntity)
+        .set({ status: 'BOOKED', bookingId: booking.id.value })
+        .where('resource_id = :resourceId AND starts_at = :startsAt AND ends_at = :endsAt', {
+           resourceId: booking.resourceId.value,
+           startsAt: booking.startsAt,
+           endsAt: booking.endsAt
+        })
+        .execute();
+
+      // 4. Insert the booking
       const entity = await queryRunner.manager.save(TypeOrmBookingEntity, this.toPersistence(booking));
 
       await queryRunner.commitTransaction();
@@ -159,24 +186,22 @@ export class TypeOrmBookingRepository implements BookingRepository {
     }
   }
 
-  private async findConflictingBookingsForUpdateWithQueryRunner(
+  private async findConflictingSlotsForUpdateWithQueryRunner(
     queryRunner: QueryRunner,
-    serviceId: ServiceId,
+    resourceId: string,
     startsAt: Date,
     endsAt: Date,
-  ): Promise<Booking[]> {
+  ): Promise<any[]> {
     const entities = await queryRunner.manager
-      .createQueryBuilder(TypeOrmBookingEntity, 'booking')
-      .where('booking.serviceId = :serviceId', { serviceId: serviceId.value })
-      .andWhere('booking.status NOT IN (:...statuses)', {
-        statuses: ['CANCELLED', 'RESCHEDULED'],
-      })
-      .andWhere('booking.startsAt < :endsAt', { endsAt })
-      .andWhere('booking.endsAt > :startsAt', { startsAt })
+      .createQueryBuilder(TypeOrmScheduleSlotEntity, 'slot')
+      .where('slot.resourceId = :resourceId', { resourceId })
+      .andWhere('slot.status IN (:...statuses)', { statuses: ['BOOKED', 'BLOCKED'] })
+      .andWhere('slot.startsAt < :endsAt', { endsAt })
+      .andWhere('slot.endsAt > :startsAt', { startsAt })
       .setLock('pessimistic_write')
       .getMany();
 
-    return entities.map((entity) => this.toDomain(entity));
+    return entities;
   }
 
   private toDomain(entity: TypeOrmBookingEntity): Booking {
@@ -185,6 +210,7 @@ export class TypeOrmBookingRepository implements BookingRepository {
       tenantId: entity.tenantId,
       branchId: entity.branchId,
       serviceId: entity.serviceId,
+      resourceId: entity.resourceId,
       customerId: entity.customerId,
       startsAt: entity.startsAt,
       endsAt: entity.endsAt,
@@ -207,6 +233,7 @@ export class TypeOrmBookingRepository implements BookingRepository {
     entity.tenantId = primitives.tenantId;
     entity.branchId = primitives.branchId;
     entity.serviceId = primitives.serviceId;
+    entity.resourceId = primitives.resourceId;
     entity.customerId = primitives.customerId;
     entity.startsAt = primitives.startsAt;
     entity.endsAt = primitives.endsAt;

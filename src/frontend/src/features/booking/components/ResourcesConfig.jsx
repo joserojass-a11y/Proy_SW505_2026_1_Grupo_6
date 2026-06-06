@@ -18,7 +18,7 @@ function ResourcesConfig() {
 
   const [resName, setResName] = useState('');
   const [resCapacity, setResCapacity] = useState(1);
-  const [resServiceId, setResServiceId] = useState('');
+  const [resServiceIds, setResServiceIds] = useState([]);
 
   const handleAddResource = (e) => {
     e.preventDefault();
@@ -29,11 +29,12 @@ function ResourcesConfig() {
       tenantId,
       name: resName,
       capacity: Number(resCapacity),
-      serviceId: resServiceId
+      serviceIds: resServiceIds
     };
     addResource(newResource);
-    showAlert(`Recurso "${resName}" asignado.`);
+    showAlert(`Recurso "${resName}" asignado a ${resServiceIds.length} servicio(s).`);
     setResName('');
+    setResServiceIds([]);
   };
 
   const activeTenantId = activeTenant ? (activeTenant.id.value || activeTenant.id) : null;
@@ -56,11 +57,15 @@ function ResourcesConfig() {
         />
         <select 
           required 
-          value={resServiceId} 
-          onChange={(e) => setResServiceId(e.target.value)} 
+          multiple
+          value={resServiceIds} 
+          onChange={(e) => {
+            const selected = Array.from(e.target.selectedOptions, option => option.value);
+            setResServiceIds(selected);
+          }} 
           className="select-inline"
+          style={{ height: 'auto', minHeight: '80px' }}
         >
-          <option value="">-- Asignar Servicio --</option>
           {filteredServices.map((s) => (
             <option key={s.id} value={s.id}>{s.name}</option>
           ))}
@@ -70,12 +75,13 @@ function ResourcesConfig() {
 
       <div className="list-container">
         {filteredResources.map((r) => {
-          const s = services.find(srv => srv.id === r.serviceId);
+          const srvs = services.filter(srv => (r.serviceIds || []).includes(srv.id));
+          const srvsNames = srvs.length > 0 ? srvs.map(s => s.name).join(', ') : 'Ninguno';
           return (
             <div key={r.id} className="list-item">
               <div>
                 <strong>{r.name}</strong>
-                <div className="list-item-sub">Habilitado para: {s ? s.name : 'Cualquiera'}</div>
+                <div className="list-item-sub">Habilitado para: {srvsNames}</div>
               </div>
               <code className="list-code">{r.id.substring(0,8)}...</code>
             </div>

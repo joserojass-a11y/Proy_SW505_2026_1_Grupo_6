@@ -1,6 +1,7 @@
 export interface CreateCustomerCommand {
   userId: string;
   tenantId: string;
+  zoneId: string;
   firstName: string;
   lastName: string;
   email: string;

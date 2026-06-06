@@ -5,6 +5,7 @@ import { BookingId } from '../../domain/value-objects/booking-id.vo';
 import { BranchId } from '../../domain/value-objects/branch-id.vo';
 import { CustomerId } from '../../domain/value-objects/customer-id.vo';
 import { ServiceId } from '../../domain/value-objects/service-id.vo';
+import { ResourceId } from '../../domain/value-objects/resource-id.vo';
 import { TenantId } from '../../domain/value-objects/tenant-id.vo';
 import { UserId } from '../../domain/value-objects/user-id.vo';
 import { CreateBookingCommand } from './create-booking.command';
@@ -27,13 +28,14 @@ export class CreateBookingCommandHandler {
   constructor(
     private readonly bookingRepository: BookingRepository,
     private readonly availabilityService: IAvailabilityService,
-  ) {}
+  ) { }
 
   async execute(command: CreateBookingCommand): Promise<CreateBookingResponseDto> {
     // Create value objects from command
     const tenantId = TenantId.create(command.tenantId);
     const branchId = BranchId.create(command.branchId);
     const serviceId = ServiceId.create(command.serviceId);
+    const resourceId = ResourceId.create(command.resourceId);
     const customerId = CustomerId.create(command.customerId);
     const createdBy = UserId.create(command.createdBy);
 
@@ -59,6 +61,7 @@ export class CreateBookingCommandHandler {
       tenantId,
       branchId,
       serviceId,
+      resourceId,
       customerId,
       startsAt: command.startsAt,
       endsAt: command.endsAt,

@@ -7,7 +7,7 @@ import { CustomerResponseDto } from './create-customer.command-handler';
 import { Customer } from '../../domain/entities/customer.entity';
 
 export class UpdateCustomerCommandHandler {
-  constructor(private readonly customerRepository: CustomerRepository) {}
+  constructor(private readonly customerRepository: CustomerRepository) { }
 
   async execute(command: UpdateCustomerCommand): Promise<CustomerResponseDto> {
     const customer = await this.customerRepository.findByUserId(UserId.create(command.userId));
@@ -36,6 +36,7 @@ export class UpdateCustomerCommandHandler {
     return {
       id: primitives.id,
       tenantId: primitives.tenantId,
+      zoneId: primitives.zoneId,
       userId: primitives.userId,
       firstName: primitives.firstName,
       lastName: primitives.lastName,

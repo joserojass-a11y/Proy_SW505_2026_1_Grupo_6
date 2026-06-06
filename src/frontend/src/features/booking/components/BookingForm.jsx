@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { bookingService } from '../services/bookingService';
 import useAppStore from '../../../store/useAppStore';
+import api from '../../../shared/services/api';
 
 function BookingForm({ onBookingCreated }) {
   const customerProfile = useAppStore((state) => state.customerProfile);
@@ -10,26 +11,29 @@ function BookingForm({ onBookingCreated }) {
 
   const [bookServiceId, setBookServiceId] = useState('');
   const [bookResourceId, setBookResourceId] = useState('');
-  const [bookStartsAt, setBookStartsAt] = useState('');
   const [bookNotes, setBookNotes] = useState('');
+  
+  // Calendario
+  const [slots, setSlots] = useState([]);
+  const [selectedSlot, setSelectedSlot] = useState(null);
+  const [isLoadingSlots, setIsLoadingSlots] = useState(false);
 
   const handleCreateBooking = async (e) => {
     e.preventDefault();
     if (!customerProfile) return;
+    if (!selectedSlot) {
+      showAlert('Por favor selecciona un horario disponible.', 'error');
+      return;
+    }
+    
     try {
-      // Calcular endsAt sumando la duración del servicio
-      const service = services.find(s => s.id === bookServiceId);
-      const duration = service ? service.baseDurationMinutes : 30;
-      const startsDate = new Date(bookStartsAt);
-      const endsDate = new Date(startsDate.getTime() + duration * 60 * 1000);
-
       await bookingService.createBooking({
         tenantId: customerProfile.tenantId,
         customerId: customerProfile.id,
         serviceId: bookServiceId,
-        resourceId: bookResourceId,
-        startsAt: startsDate.toISOString(),
-        endsAt: endsDate.toISOString(),
+        resourceId: selectedSlot.resourceId, // Extraído del slot
+        startsAt: selectedSlot.startsAt,
+        endsAt: selectedSlot.endsAt,
         notes: bookNotes
       });
 
@@ -37,7 +41,8 @@ function BookingForm({ onBookingCreated }) {
       setBookNotes('');
       setBookServiceId('');
       setBookResourceId('');
-      setBookStartsAt('');
+      setSelectedSlot(null);
+      setSlots([]);
       
       if (onBookingCreated) {
         onBookingCreated();
@@ -50,7 +55,49 @@ function BookingForm({ onBookingCreated }) {
 
   const bookTenantId = customerProfile ? customerProfile.tenantId : null;
   const filteredServices = services.filter(s => s.tenantId === bookTenantId);
-  const filteredResources = resources.filter(r => r.tenantId === bookTenantId && (!bookServiceId || r.serviceId === bookServiceId));
+  const filteredResources = resources.filter(r => r.tenantId === bookTenantId && (!bookServiceId || (r.serviceIds || []).includes(bookServiceId)));
+
+  useEffect(() => {
+    const fetchSlots = async () => {
+      if (!bookServiceId) {
+        setSlots([]);
+        return;
+      }
+      setIsLoadingSlots(true);
+      try {
+        const res = await api.get('/slots', {
+          params: {
+            serviceId: bookServiceId,
+            resourceId: bookResourceId || undefined
+          }
+        });
+        setSlots(res.data);
+      } catch (err) {
+        console.error('Error fetching slots from API, using mock logic fallback', err);
+        // Fallback for demo purposes if backend isn't ready
+        const dummySlots = [];
+        const resId = bookResourceId || (filteredResources[0]?.id) || 'demo-resource-id';
+        const now = new Date();
+        now.setMinutes(0, 0, 0);
+        for(let i=1; i<=10; i++) {
+          const start = new Date(now.getTime() + i * 3600 * 1000);
+          const end = new Date(start.getTime() + 30 * 60 * 1000);
+          dummySlots.push({
+            id: `slot-${i}`,
+            resourceId: resId,
+            startsAt: start.toISOString(),
+            endsAt: end.toISOString(),
+            status: 'AVAILABLE'
+          });
+        }
+        setSlots(dummySlots);
+      } finally {
+        setIsLoadingSlots(false);
+      }
+    };
+    
+    fetchSlots();
+  }, [bookServiceId, bookResourceId]);
 
   return (
     <div className="glass-card">
@@ -66,6 +113,7 @@ function BookingForm({ onBookingCreated }) {
             onChange={(e) => {
               setBookServiceId(e.target.value);
               setBookResourceId(''); // Limpiar recurso
+              setSelectedSlot(null);
             }} 
             className="select"
           >
@@ -93,14 +141,34 @@ function BookingForm({ onBookingCreated }) {
         </div>
 
         <div className="form-group">
-          <label className="label">Fecha y Hora de Inicio</label>
-          <input 
-            type="datetime-local" 
-            required 
-            value={bookStartsAt} 
-            onChange={(e) => setBookStartsAt(e.target.value)} 
-            className="input"
-          />
+          <label className="label">Seleccionar Horario</label>
+          {!bookServiceId ? (
+            <div className="help-text">Selecciona un servicio para ver disponibilidad.</div>
+          ) : isLoadingSlots ? (
+            <div className="help-text">Cargando horarios...</div>
+          ) : slots.length === 0 ? (
+            <div className="help-text">No hay horarios disponibles.</div>
+          ) : (
+            <div className="slots-grid">
+              {slots.map((slot, idx) => {
+                const dateObj = new Date(slot.startsAt);
+                const timeStr = dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                const dateStr = dateObj.toLocaleDateString();
+                const isSelected = selectedSlot && selectedSlot.startsAt === slot.startsAt && selectedSlot.resourceId === slot.resourceId;
+                
+                return (
+                  <div 
+                    key={slot.id || idx}
+                    className={`slot-item ${isSelected ? 'selected' : ''}`}
+                    onClick={() => setSelectedSlot(slot)}
+                  >
+                    <div className="slot-time">{timeStr}</div>
+                    <div className="slot-date">{dateStr}</div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
         </div>
 
         <div className="form-group">

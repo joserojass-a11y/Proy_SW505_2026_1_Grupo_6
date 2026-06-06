@@ -1,7 +1,11 @@
 import { Transform, type TransformFnParams } from 'class-transformer';
-import { IsIn, IsNotEmpty, IsObject, IsOptional, IsString, Length } from 'class-validator';
+import { IsIn, IsNotEmpty, IsObject, IsOptional, IsString, Length, IsUUID } from 'class-validator';
 
 export class CreateTenantDto {
+  @IsUUID()
+  @IsNotEmpty()
+  zoneId!: string;
+
   @Transform(({ value }: TransformFnParams) => (typeof value === 'string' ? value.trim().toUpperCase() : value))
   @IsString()
   @IsNotEmpty()

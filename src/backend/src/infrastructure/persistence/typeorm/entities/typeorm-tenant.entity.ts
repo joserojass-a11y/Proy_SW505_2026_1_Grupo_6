@@ -2,6 +2,7 @@ import { EntitySchema } from 'typeorm';
 
 export interface TypeOrmTenantProps {
   id: string;
+  zoneId: string;
   countryCode: string;
   status: 'ACTIVE' | 'SUSPENDED' | 'TRIAL_EXPIRED';
   subdomain: string;
@@ -14,6 +15,7 @@ export interface TypeOrmTenantProps {
 
 export class TypeOrmTenantEntity implements TypeOrmTenantProps {
   id!: string;
+  zoneId!: string;
   countryCode!: string;
   status!: 'ACTIVE' | 'SUSPENDED' | 'TRIAL_EXPIRED';
   subdomain!: string;
@@ -30,6 +32,7 @@ export const TypeOrmTenantEntitySchema = new EntitySchema<TypeOrmTenantEntity>({
   tableName: 'tenants',
   columns: {
     id: { type: 'uuid', primary: true, generated: 'uuid', name: 'id', default: () => 'gen_random_uuid()' },
+    zoneId: { type: 'uuid', name: 'zone_id', nullable: true },
     countryCode: { type: 'varchar', length: 2, name: 'country_code' },
     status: { type: 'varchar', length: 20, name: 'status', default: 'ACTIVE' },
     subdomain: { type: 'varchar', length: 100, unique: true, name: 'subdomain' },

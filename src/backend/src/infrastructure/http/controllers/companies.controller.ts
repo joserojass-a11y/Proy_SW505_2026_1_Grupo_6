@@ -20,6 +20,7 @@ export class CompaniesController {
   async create(@CurrentUserId() userId: string, @Body() body: CreateTenantDto) {
     return this.createTenantCommandHandler.execute({
       ownerUserId: userId,
+      zoneId: body.zoneId,
       countryCode: body.countryCode,
       subdomain: body.subdomain,
       name: body.name,
