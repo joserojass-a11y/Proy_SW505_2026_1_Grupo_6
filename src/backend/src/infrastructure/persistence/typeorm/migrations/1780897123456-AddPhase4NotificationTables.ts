@@ -37,6 +37,7 @@ export class AddPhase4NotificationTables1780897123456 implements MigrationInterf
                 "updated_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
                 
                 CONSTRAINT "PK_notification_channels_id" PRIMARY KEY ("id"),
+                CONSTRAINT "UQ_notification_channels_code" UNIQUE ("code"),
                 CONSTRAINT "UQ_notification_channels_code_tenant" UNIQUE ("code", "tenant_id"),
                 CONSTRAINT "FK_notification_channels_tenant_id" 
                     FOREIGN KEY ("tenant_id") 

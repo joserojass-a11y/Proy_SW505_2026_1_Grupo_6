@@ -1,6 +1,7 @@
 import { Provider } from '@nestjs/common';
 import { DataSource, DataSourceOptions } from 'typeorm';
 import { existsSync } from 'fs';
+import { resolve } from 'path';
 import { INFRASTRUCTURE_TOKENS } from './infrastructure.tokens';
 import { TypeOrmUserEntitySchema } from '../persistence/typeorm/entities/typeorm-user.entity';
 import { TypeOrmTenantEntitySchema } from '../persistence/typeorm/entities/typeorm-tenant.entity';
@@ -58,7 +59,7 @@ function buildDataSourceOptions(): DataSourceOptions {
         TypeOrmNotificationEventEntitySchema,
         TypeOrmNotificationPreferenceEntitySchema
       ],
-      migrations: [__dirname + '/persistence/typeorm/migrations/*.{ts,js}'],
+      migrations: [resolve(__dirname, '../persistence/typeorm/migrations/*.{ts,js}')],
       migrationsRun: true,
       synchronize: false,
       logging: process.env.TYPEORM_LOGGING === 'true',
@@ -90,7 +91,7 @@ function buildDataSourceOptions(): DataSourceOptions {
       TypeOrmNotificationEventEntitySchema,
       TypeOrmNotificationPreferenceEntitySchema
     ],
-    migrations: [__dirname + '/persistence/typeorm/migrations/*.{ts,js}'],
+    migrations: [resolve(__dirname, '../persistence/typeorm/migrations/*.{ts,js}')],
     migrationsRun: true,
     synchronize: false,
     logging: process.env.TYPEORM_LOGGING === 'true',

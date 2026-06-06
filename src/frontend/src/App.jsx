@@ -1,12 +1,8 @@
-import React from 'react'
+import React from 'react';
+import AppRouter from './router';
 
 function App() {
-  return (
-    <div>
-      <h1>Sistema de Gestión de Reservas - Arquitectura CQS</h1>
-      <p>El frontend SPA se ha compilado y desplegado correctamente.</p>
-    </div>
-  )
+  return <AppRouter />;
 }
 
-export default App
+export default App;

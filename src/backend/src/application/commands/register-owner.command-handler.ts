@@ -13,7 +13,7 @@ export class RegisterOwnerCommandHandler {
   constructor(
     private readonly userRepository: UserRepository,
     private readonly passwordHasher: IPasswordHasher,
-  ) {}
+  ) { }
 
   async execute(command: RegisterOwnerCommand): Promise<{ id: string }> {
     const email = Email.create(command.email);
@@ -30,6 +30,7 @@ export class RegisterOwnerCommandHandler {
       passwordHash: PasswordHash.create(passwordHash),
       fullName: FullName.create(command.fullName),
       role: 'OWNER',
+      status: 'ACTIVE'
     });
 
     const savedUser = await this.userRepository.save(user);

@@ -14,7 +14,7 @@ export class RegisterUserCommandHandler {
   constructor(
     private readonly userRepository: UserRepository,
     private readonly passwordHasher: IPasswordHasher,
-  ) {}
+  ) { }
 
   async execute(command: RegisterUserCommand): Promise<RegisterUserResponseDto> {
     const email = Email.create(command.email);
@@ -30,6 +30,7 @@ export class RegisterUserCommandHandler {
       email,
       passwordHash: PasswordHash.create(passwordHash),
       fullName: FullName.create(command.fullName),
+      status: 'ACTIVE'
     });
 
     const savedUser = await this.userRepository.save(user);

@@ -18,6 +18,8 @@ import { GetNotificationHistoryQueryHandler } from '../../application/queries/ge
 import { BookingReminderSchedulerService } from '../services/booking-reminder-scheduler.service';
 import { CustomersModule } from './customers.module';
 import { BookingNotificationSubscriber } from '../services/booking-notification-subscriber.service';
+import { NotificationsController } from './controllers/notifications.controller';
+
 
 
 /**
@@ -159,6 +161,7 @@ const notificationOrchestrationServiceProvider: Provider = {
  */
 @Module({
   imports: [DatabaseModule, CustomersModule],
+  controllers: [NotificationsController],
   providers: [
     // Repositories
     notificationEventRepositoryProvider,

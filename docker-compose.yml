@@ -42,8 +42,11 @@ services:
       - NODE_ENV=${NODE_ENV}
       - DATABASE_URL=${DATABASE_URL}
       - REDIS_URL=${REDIS_URL}
-      - JWT_SECRET=${JWT_SECRET}
       - CORS_ORIGINS=${CORS_ORIGINS}
+      - JWT_PRIVATE_KEY_PATH=/app/secrets/jwt_private.pem
+      - JWT_PUBLIC_KEY_PATH=/app/secrets/jwt_public.pem
+    volumes:
+      - ./secrets:/app/secrets:ro
     depends_on:
       postgres:
         condition: service_healthy
