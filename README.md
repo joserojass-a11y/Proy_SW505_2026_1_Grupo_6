@@ -6,7 +6,7 @@
  	- Rojas Sanchez, Jose Martin
 	- Muñoz Bolaños, Pablo Antonio
 	- Saldaña Matamoros, Axel Paul
-	- Gomez Feliz, Marco Sebastian
+	- Gomez Felix, Marco Sebastian
  
  ---
 

@@ -216,6 +216,7 @@ describe('CQS Handlers Unit Tests', () => {
 
       const result = await handler.execute({
         ownerUserId: validUuid1,
+        zoneId: validUuid3,
         countryCode: 'PE',
         subdomain: 'my-business',
         name: 'My Business',
@@ -235,6 +236,7 @@ describe('CQS Handlers Unit Tests', () => {
       await expect(
         handler.execute({
           ownerUserId: validUuid1,
+          zoneId: validUuid3,
           countryCode: 'PE',
           subdomain: 'my-business',
           name: 'My Business',
@@ -256,6 +258,7 @@ describe('CQS Handlers Unit Tests', () => {
       await expect(
         handler.execute({
           ownerUserId: validUuid1,
+          zoneId: validUuid3,
           countryCode: 'PE',
           subdomain: 'my-business',
           name: 'My Business',
@@ -278,6 +281,7 @@ describe('CQS Handlers Unit Tests', () => {
       const tenant = Tenant.create({
         id: validUuid1,
         ownerUserId: validUuid1,
+        zoneId: validUuid3,
         countryCode: 'PE',
         subdomain: 'existing',
         name: 'Existing',
@@ -288,6 +292,7 @@ describe('CQS Handlers Unit Tests', () => {
       await expect(
         handler.execute({
           ownerUserId: validUuid1,
+          zoneId: validUuid3,
           countryCode: 'PE',
           subdomain: 'new',
           name: 'New',
@@ -302,6 +307,7 @@ describe('CQS Handlers Unit Tests', () => {
       const tenant = Tenant.create({
         id: validUuid2,
         ownerUserId: validUuid1,
+        zoneId: validUuid3,
         countryCode: 'PE',
         subdomain: 'my-tenant',
         name: 'My Tenant',
@@ -312,6 +318,7 @@ describe('CQS Handlers Unit Tests', () => {
       const result = await handler.execute({
         tenantId: validUuid2,
         userId: validUuid3,
+        zoneId: validUuid3,
         firstName: 'Juan',
         lastName: 'Perez',
         email: 'juan@example.com',
@@ -334,6 +341,7 @@ describe('CQS Handlers Unit Tests', () => {
         handler.execute({
           tenantId: validUuid2,
           userId: validUuid3,
+          zoneId: validUuid3,
           firstName: 'Juan',
           lastName: 'Perez',
           email: 'juan@example.com',
@@ -349,6 +357,7 @@ describe('CQS Handlers Unit Tests', () => {
       const tenant = Tenant.create({
         id: validUuid2,
         ownerUserId: validUuid1,
+        zoneId: validUuid3,
         countryCode: 'PE',
         subdomain: 'my-tenant',
         name: 'My Tenant',
@@ -356,6 +365,7 @@ describe('CQS Handlers Unit Tests', () => {
       const customer = Customer.create({
         id: validUuid1,
         tenantId: validUuid2,
+        zoneId: validUuid3,
         userId: validUuid3,
         firstName: 'Juan',
         lastName: 'Perez',
@@ -371,6 +381,7 @@ describe('CQS Handlers Unit Tests', () => {
         handler.execute({
           tenantId: validUuid2,
           userId: validUuid3,
+          zoneId: validUuid3,
           firstName: 'Juan',
           lastName: 'Perez',
           email: 'juan@example.com',
@@ -409,6 +420,7 @@ describe('CQS Handlers Unit Tests', () => {
       const customer = Customer.create({
         id: validUuid1,
         tenantId: validUuid2,
+        zoneId: validUuid3,
         userId: validUuid3,
         firstName: 'Juan',
         lastName: 'Perez',
@@ -462,6 +474,7 @@ describe('CQS Handlers Unit Tests', () => {
       const tenant = Tenant.create({
         id: validUuid1,
         ownerUserId: validUuid2,
+        zoneId: validUuid3,
         countryCode: 'PE',
         subdomain: 'test-tenant',
         name: 'Test Tenant',
@@ -478,6 +491,7 @@ describe('CQS Handlers Unit Tests', () => {
       const customer = Customer.create({
         id: validUuid1,
         tenantId: validUuid2,
+        zoneId: validUuid3,
         userId: validUuid3,
         firstName: 'Juan',
         lastName: 'Perez',

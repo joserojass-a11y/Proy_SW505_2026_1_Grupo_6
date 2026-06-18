@@ -40,6 +40,8 @@ describe('NotificationOrchestrationService — Integración', () => {
   let mockEmailSvc: jest.Mocked<EmailService>;
   let mockQueueSvc: jest.Mocked<NotificationQueueService>;
   let orchestrator: NotificationOrchestrationService;
+  let consoleLogSpy: jest.SpyInstance;
+  let consoleErrorSpy: jest.SpyInstance;
 
   /** Construye un NotificationEvent con estado pending */
   const makeEvent = (
@@ -74,6 +76,9 @@ describe('NotificationOrchestrationService — Integración', () => {
     });
 
   beforeEach(() => {
+    consoleLogSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
+    consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+
     mockEventRepo = {
       save: jest.fn().mockResolvedValue(undefined),
       update: jest.fn().mockResolvedValue(undefined),
@@ -126,6 +131,11 @@ describe('NotificationOrchestrationService — Integración', () => {
     );
   });
 
+  afterEach(() => {
+    consoleLogSpy.mockRestore();
+    consoleErrorSpy.mockRestore();
+  });
+
   // ═══════════════════════════════════════════════════════════════════════════
   // 1. FLUJO COMPLETO DE ENVÍO
   // ═══════════════════════════════════════════════════════════════════════════
@@ -157,7 +167,7 @@ describe('NotificationOrchestrationService — Integración', () => {
 
       // El orquestador llama a findByCustomerId con el recipientId (como VO o string)
       expect(mockPrefRepo.findByCustomerId).toHaveBeenCalledTimes(1);
-      const calledWith = mockPrefRepo.findByCustomerId.mock.calls[0][0];
+      const calledWith: any = mockPrefRepo.findByCustomerId.mock.calls[0][0];
       // El argumento puede ser el Value Object o el string plano según la implementación
       const calledValue = typeof calledWith === 'string' ? calledWith : (calledWith as any)._value ?? calledWith.value ?? calledWith;
       expect(calledValue).toBe(CUSTOMER_UUID);

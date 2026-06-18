@@ -53,6 +53,7 @@ describe('CustomersController Integration Tests', () => {
     const tenant = Tenant.create({
       id: '123e4567-e89b-12d3-a456-426614174099',
       ownerUserId: owner!.id,
+      zoneId: '123e4567-e89b-12d3-a456-426614174099',
       countryCode: 'PE',
       subdomain: 'my-business',
       name: 'My Business',
@@ -90,6 +91,7 @@ describe('CustomersController Integration Tests', () => {
       .set('Authorization', `Bearer ${token}`)
       .send({
         tenantId,
+        zoneId: '123e4567-e89b-12d3-a456-426614174099',
         firstName: 'Juan',
         lastName: 'Perez',
         email: 'client@example.com',

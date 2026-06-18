@@ -13,6 +13,7 @@ import { TypeOrmBookingCancellationEntitySchema } from '../persistence/typeorm/e
 import { TypeOrmBookingRescheduleEntitySchema } from '../persistence/typeorm/entities/typeorm-booking-reschedule.entity';
 import { TypeOrmNotificationEventEntitySchema } from '../persistence/typeorm/entities/typeorm-notification-event.entity';
 import { TypeOrmNotificationPreferenceEntitySchema } from '../persistence/typeorm/entities/typeorm-notification-preference.entity';
+import { TypeOrmScheduleSlotEntitySchema } from '../persistence/typeorm/entities/typeorm-schedule-slot.entity';
 
 function buildDataSourceOptions(): DataSourceOptions {
   const isDocker = existsSync('/.dockerenv') || process.env.IS_DOCKER === 'true';
@@ -57,7 +58,8 @@ function buildDataSourceOptions(): DataSourceOptions {
         TypeOrmBookingCancellationEntitySchema,
         TypeOrmBookingRescheduleEntitySchema,
         TypeOrmNotificationEventEntitySchema,
-        TypeOrmNotificationPreferenceEntitySchema
+        TypeOrmNotificationPreferenceEntitySchema,
+        TypeOrmScheduleSlotEntitySchema
       ],
       migrations: [resolve(__dirname, '../persistence/typeorm/migrations/*.{ts,js}')],
       migrationsRun: true,
@@ -89,7 +91,8 @@ function buildDataSourceOptions(): DataSourceOptions {
       TypeOrmBookingCancellationEntitySchema,
       TypeOrmBookingRescheduleEntitySchema,
       TypeOrmNotificationEventEntitySchema,
-      TypeOrmNotificationPreferenceEntitySchema
+      TypeOrmNotificationPreferenceEntitySchema,
+      TypeOrmScheduleSlotEntitySchema
     ],
     migrations: [resolve(__dirname, '../persistence/typeorm/migrations/*.{ts,js}')],
     migrationsRun: true,

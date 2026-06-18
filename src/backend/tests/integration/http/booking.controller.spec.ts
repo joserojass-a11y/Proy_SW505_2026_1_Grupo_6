@@ -29,7 +29,11 @@ describe('BookingController Integration Tests', () => {
     })
       .overrideProvider(INFRASTRUCTURE_TOKENS.DATA_SOURCE)
       .useValue(dataSource)
-      // Availability Service is already mocked in BookingModule
+      .overrideProvider(INFRASTRUCTURE_TOKENS.AVAILABILITY_SERVICE)
+      .useValue({
+        checkAvailability: jest.fn().mockResolvedValue(true),
+        getAvailableSlots: jest.fn().mockResolvedValue([]),
+      })
       .compile();
 
     app = moduleFixture.createNestApplication();
@@ -57,6 +61,7 @@ describe('BookingController Integration Tests', () => {
     const tenant = Tenant.create({
       id: '123e4567-e89b-12d3-a456-426614174099',
       ownerUserId: owner!.id,
+      zoneId: '123e4567-e89b-12d3-a456-426614174099',
       countryCode: 'PE',
       subdomain: 'my-business',
       name: 'My Business',
@@ -90,6 +95,7 @@ describe('BookingController Integration Tests', () => {
       id: '223e4567-e89b-12d3-a456-426614174099',
       tenantId,
       userId,
+      zoneId: '123e4567-e89b-12d3-a456-426614174099',
       firstName: 'Jane',
       lastName: 'Doe',
       email: 'client@example.com',
@@ -152,6 +158,7 @@ describe('BookingController Integration Tests', () => {
       id: '523e4567-e89b-12d3-a456-426614174099',
       tenantId,
       userId,
+      zoneId: '123e4567-e89b-12d3-a456-426614174099',
       firstName: 'Double',
       lastName: 'Booking',
       email: 'doublebooking@example.com',
