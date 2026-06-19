@@ -95,7 +95,7 @@ export const TypeOrmNotificationPreferenceEntitySchema =
     indices: [
       {
         name: 'UQ_customer_notification_preferences',
-        columns: ['customer_id', 'topic_id', 'channel_id'],
+        columns: ['customerId', 'topicId', 'channelId'],
         unique: true,
       },
     ],

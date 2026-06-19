@@ -25,6 +25,7 @@ describe('Phase 1 Extra Command Handlers - Equivalencia, Límites y Caminos', ()
       const mockCustomer = Customer.create({
         id: validUuid,
         tenantId: validUuid,
+        zoneId: validUuid,
         userId: validUuid,
         firstName: 'Old',
         lastName: 'Name',
@@ -54,6 +55,7 @@ describe('Phase 1 Extra Command Handlers - Equivalencia, Límites y Caminos', ()
       const mockCustomer = Customer.create({
         id: validUuid,
         tenantId: validUuid,
+        zoneId: validUuid,
         userId: validUuid,
         firstName: 'Old',
         lastName: 'Name',

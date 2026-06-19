@@ -24,6 +24,7 @@ export class CustomersController {
     return this.createCustomerCommandHandler.execute({
       userId,
       tenantId: body.tenantId,
+      zoneId: body.zoneId,
       firstName: body.firstName,
       lastName: body.lastName,
       email: body.email,

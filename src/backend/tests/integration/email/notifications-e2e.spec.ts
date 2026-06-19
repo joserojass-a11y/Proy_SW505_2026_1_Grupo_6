@@ -1,14 +1,14 @@
-import { NotificationOrchestrationService } from '../../src/infrastructure/services/notification-orchestration.service';
-import { NotificationEvent } from '../../src/domain/entities/notification-event.entity';
-import { NotificationPreference } from '../../src/domain/entities/notification-preference.entity';
-import { NotificationEventRepository } from '../../src/domain/repositories/notification-event.repository';
-import { NotificationPreferenceRepository } from '../../src/domain/repositories/notification-preference.repository';
-import { EmailService } from '../../src/application/services/email.service.interface';
-import { NotificationQueueService } from '../../src/application/services/notification-queue.service.interface';
-import { GetPendingNotificationsQueryHandler } from '../../src/application/queries/get-pending-notifications.query-handler';
-import { MarkNotificationAsSentCommandHandler } from '../../src/application/commands/mark-notification-as-sent.command-handler';
-import { RecordNotificationFailureCommandHandler } from '../../src/application/commands/record-notification-failure.command-handler';
-import { EmailSendException } from '../../src/infrastructure/email/email-send.exception';
+import { NotificationOrchestrationService } from '../../../src/infrastructure/services/notification-orchestration.service';
+import { NotificationEvent } from '../../../src/domain/entities/notification-event.entity';
+import { NotificationPreference } from '../../../src/domain/entities/notification-preference.entity';
+import { NotificationEventRepository } from '../../../src/domain/repositories/notification-event.repository';
+import { NotificationPreferenceRepository } from '../../../src/domain/repositories/notification-preference.repository';
+import { EmailService } from '../../../src/application/services/email.service.interface';
+import { NotificationQueueService } from '../../../src/application/services/notification-queue.service.interface';
+import { GetPendingNotificationsQueryHandler } from '../../../src/application/queries/get-pending-notifications.query-handler';
+import { MarkNotificationAsSentCommandHandler } from '../../../src/application/commands/mark-notification-as-sent.command-handler';
+import { RecordNotificationFailureCommandHandler } from '../../../src/application/commands/record-notification-failure.command-handler';
+import { EmailSendException } from '../../../src/infrastructure/email/email-send.exception';
 
 /**
  * Pruebas de Integración: NotificationOrchestrationService
@@ -29,17 +29,19 @@ import { EmailSendException } from '../../src/infrastructure/email/email-send.ex
  */
 describe('NotificationOrchestrationService — Integración', () => {
   // ─── UUIDs fijos ───────────────────────────────────────────────────────────
-  const TENANT_UUID   = '550e8400-e29b-41d4-a716-446655440001';
-  const BOOKING_UUID  = '550e8400-e29b-41d4-a716-446655440002';
+  const TENANT_UUID = '550e8400-e29b-41d4-a716-446655440001';
+  const BOOKING_UUID = '550e8400-e29b-41d4-a716-446655440002';
   const TEMPLATE_UUID = '550e8400-e29b-41d4-a716-446655440003';
   const CUSTOMER_UUID = '550e8400-e29b-41d4-a716-446655440004';
 
   // ─── Mocks ─────────────────────────────────────────────────────────────────
-  let mockEventRepo:   jest.Mocked<NotificationEventRepository>;
-  let mockPrefRepo:    jest.Mocked<NotificationPreferenceRepository>;
-  let mockEmailSvc:    jest.Mocked<EmailService>;
-  let mockQueueSvc:    jest.Mocked<NotificationQueueService>;
-  let orchestrator:    NotificationOrchestrationService;
+  let mockEventRepo: jest.Mocked<NotificationEventRepository>;
+  let mockPrefRepo: jest.Mocked<NotificationPreferenceRepository>;
+  let mockEmailSvc: jest.Mocked<EmailService>;
+  let mockQueueSvc: jest.Mocked<NotificationQueueService>;
+  let orchestrator: NotificationOrchestrationService;
+  let consoleLogSpy: jest.SpyInstance;
+  let consoleErrorSpy: jest.SpyInstance;
 
   /** Construye un NotificationEvent con estado pending */
   const makeEvent = (
@@ -74,6 +76,9 @@ describe('NotificationOrchestrationService — Integración', () => {
     });
 
   beforeEach(() => {
+    consoleLogSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
+    consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+
     mockEventRepo = {
       save: jest.fn().mockResolvedValue(undefined),
       update: jest.fn().mockResolvedValue(undefined),
@@ -111,8 +116,8 @@ describe('NotificationOrchestrationService — Integración', () => {
     };
 
     // Instanciar handlers reales (usan los repos mockeados)
-    const getPendingHandler    = new GetPendingNotificationsQueryHandler(mockEventRepo);
-    const markAsSentHandler    = new MarkNotificationAsSentCommandHandler(mockEventRepo);
+    const getPendingHandler = new GetPendingNotificationsQueryHandler(mockEventRepo);
+    const markAsSentHandler = new MarkNotificationAsSentCommandHandler(mockEventRepo);
     const recordFailureHandler = new RecordNotificationFailureCommandHandler(mockEventRepo);
 
     orchestrator = new NotificationOrchestrationService(
@@ -124,6 +129,11 @@ describe('NotificationOrchestrationService — Integración', () => {
       markAsSentHandler,
       recordFailureHandler,
     );
+  });
+
+  afterEach(() => {
+    consoleLogSpy.mockRestore();
+    consoleErrorSpy.mockRestore();
   });
 
   // ═══════════════════════════════════════════════════════════════════════════
@@ -157,7 +167,7 @@ describe('NotificationOrchestrationService — Integración', () => {
 
       // El orquestador llama a findByCustomerId con el recipientId (como VO o string)
       expect(mockPrefRepo.findByCustomerId).toHaveBeenCalledTimes(1);
-      const calledWith = mockPrefRepo.findByCustomerId.mock.calls[0][0];
+      const calledWith: any = mockPrefRepo.findByCustomerId.mock.calls[0][0];
       // El argumento puede ser el Value Object o el string plano según la implementación
       const calledValue = typeof calledWith === 'string' ? calledWith : (calledWith as any)._value ?? calledWith.value ?? calledWith;
       expect(calledValue).toBe(CUSTOMER_UUID);
@@ -237,7 +247,7 @@ describe('NotificationOrchestrationService — Integración', () => {
       mockEventRepo.findById.mockResolvedValue(event);
 
       // Llamadas concurrentes
-      const [, ] = await Promise.all([
+      const [,] = await Promise.all([
         orchestrator.processQueue(),
         orchestrator.processQueue(),
       ]);

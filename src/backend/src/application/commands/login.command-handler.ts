@@ -12,7 +12,7 @@ export class LoginCommandHandler {
     private readonly userRepository: UserRepository,
     private readonly passwordHasher: IPasswordHasher,
     private readonly jwtTokenGenerator: IJwtTokenGenerator,
-  ) {}
+  ) { }
 
   async execute(command: LoginCommand): Promise<AuthResponseDto> {
     const email = Email.create(command.email);

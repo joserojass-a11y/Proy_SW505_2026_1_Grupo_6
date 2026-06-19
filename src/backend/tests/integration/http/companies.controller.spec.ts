@@ -63,6 +63,7 @@ describe('CompaniesController (Tenants) Integration Tests', () => {
       .post('/tenants')
       .set('Authorization', `Bearer ${token}`)
       .send({
+        zoneId: '123e4567-e89b-12d3-a456-426614174099',
         countryCode: 'PE',
         subdomain: 'my-business',
         name: 'My Business',
@@ -106,6 +107,7 @@ describe('CompaniesController (Tenants) Integration Tests', () => {
       .post('/tenants')
       .set('Authorization', `Bearer ${clientToken}`)
       .send({
+        zoneId: '123e4567-e89b-12d3-a456-426614174099',
         countryCode: 'PE',
         subdomain: 'my-business',
         name: 'My Business',

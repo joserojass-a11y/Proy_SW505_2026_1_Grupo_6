@@ -52,6 +52,7 @@ describe('TypeOrmCustomerRepository Integration Tests', () => {
     const tenant = Tenant.create({
       id: validTenantId,
       ownerUserId: ownerUser.id,
+      zoneId: '123e4567-e89b-12d3-a456-426614174099',
       countryCode: 'PE',
       subdomain: 'my-tenant',
       name: 'My Tenant',
@@ -74,6 +75,7 @@ describe('TypeOrmCustomerRepository Integration Tests', () => {
       id: validCustomerId,
       tenantId: validTenantId,
       userId: validUserId,
+      zoneId: '123e4567-e89b-12d3-a456-426614174099',
       firstName: 'Juan',
       lastName: 'Perez',
       email: 'juan@example.com',

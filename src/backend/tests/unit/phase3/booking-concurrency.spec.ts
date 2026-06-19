@@ -43,37 +43,37 @@ class ConcurrencyTestBookingRepository implements BookingRepository {
   private locks: Map<string, boolean> = new Map(); // Simulate locks
   private requestLog: Array<{ timestamp: Date; success: boolean; error?: string }> = [];
 
-  async findById() {
+  async findById(id: BookingId) {
     return null;
   }
 
-  async findByIdAndTenant() {
+  async findByIdAndTenant(id: BookingId, tenantId: TenantId) {
     return null;
   }
 
-  async findConflictingBookings() {
+  async findConflictingBookings(serviceId: ServiceId, startsAt: Date, endsAt: Date) {
     return [];
   }
 
-  async findConflictingBookingsForUpdate() {
+  async findConflictingBookingsForUpdate(serviceId: ServiceId, startsAt: Date, endsAt: Date) {
     // Simulate finding conflicts
     return Array.from(this.bookings.values()).filter(
       (b) =>
-        b.serviceId.value === '123e4567-e89b-12d3-a456-426614174003' &&
+        b.serviceId.value === serviceId.value &&
         b.status.value !== 'CANCELLED' &&
         b.status.value !== 'RESCHEDULED',
     );
   }
 
-  async listByServiceId() {
+  async listByServiceId(serviceId: ServiceId) {
     return [];
   }
 
-  async listByCustomerId() {
+  async listByCustomerId(customerId: string) {
     return [];
   }
 
-  async listByTenantId() {
+  async listByTenantId(tenantId: TenantId) {
     return [];
   }
 
@@ -86,7 +86,7 @@ class ConcurrencyTestBookingRepository implements BookingRepository {
     return booking;
   }
 
-  async deleteById() {}
+  async deleteById(id: BookingId) {}
 
   /**
    * Critical method: createWithLocking with pessimistic locking simulation
@@ -110,13 +110,6 @@ class ConcurrencyTestBookingRepository implements BookingRepository {
     this.locks.set(lockKey, true);
 
     try {
-      // Check for conflicts WITHIN the lock (critical!)
-      const conflicts = await this.findConflictingBookings(
-        BookingId.create(booking.serviceId.value),
-        booking.startsAt,
-        booking.endsAt,
-      );
-
       // FIX: Use correct method signature
       const conflictingBookings = await this.findConflictingBookingsForUpdate(
         booking.serviceId,
@@ -185,6 +178,7 @@ describe('Concurrency Test: Multiple Concurrent Booking Attempts', () => {
         tenantId: '123e4567-e89b-12d3-a456-426614174001',
         branchId: '123e4567-e89b-12d3-a456-426614174002',
         serviceId: '123e4567-e89b-12d3-a456-426614174003',
+        resourceId: '123e4567-e89b-12d3-a456-426614174099',
         customerId: '123e4567-e89b-12d3-a456-' + String(index).padStart(12, '0'), // Different customers
         startsAt,
         endsAt,
@@ -244,6 +238,7 @@ describe('Concurrency Test: Multiple Concurrent Booking Attempts', () => {
         tenantId: '123e4567-e89b-12d3-a456-426614174001',
         branchId: '123e4567-e89b-12d3-a456-426614174002',
         serviceId: '123e4567-e89b-12d3-a456-426614174003',
+        resourceId: '123e4567-e89b-12d3-a456-426614174099',
         customerId: '123e4567-e89b-12d3-a456-' + String(index).padStart(12, '0'),
         startsAt,
         endsAt,

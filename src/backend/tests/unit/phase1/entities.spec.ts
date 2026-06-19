@@ -138,6 +138,7 @@ describe('Domain Entities Unit Tests', () => {
     it('should create and reconstitute a tenant', () => {
       const tenant = Tenant.create({
         id: validUuid1,
+        zoneId: validUuid3,
         countryCode: 'pe',
         subdomain: 'my-tenant',
         name: 'My Tenant',
@@ -153,6 +154,7 @@ describe('Domain Entities Unit Tests', () => {
 
       const reconstituted = Tenant.reconstitute({
         id: validUuid1,
+        zoneId: validUuid3,
         countryCode: 'PE',
         subdomain: 'my-tenant',
         name: 'My Tenant',
@@ -169,6 +171,7 @@ describe('Domain Entities Unit Tests', () => {
       expect(() =>
         Tenant.create({
           id: validUuid1,
+          zoneId: validUuid3,
           countryCode: 'pe1', // invalid
           subdomain: 'my-tenant',
           name: 'My Tenant',
@@ -179,6 +182,7 @@ describe('Domain Entities Unit Tests', () => {
       expect(() =>
         Tenant.create({
           id: validUuid1,
+          zoneId: validUuid3,
           countryCode: 'PE',
           subdomain: 'invalid_subdomain', // invalid format
           name: 'My Tenant',
@@ -189,6 +193,7 @@ describe('Domain Entities Unit Tests', () => {
       expect(() =>
         Tenant.create({
           id: validUuid1,
+          zoneId: validUuid3,
           countryCode: 'PE',
           subdomain: 'sub',
           name: ' ', // too short/empty
@@ -200,6 +205,7 @@ describe('Domain Entities Unit Tests', () => {
     it('should change status', () => {
       const tenant = Tenant.create({
         id: validUuid1,
+        zoneId: validUuid3,
         countryCode: 'PE',
         subdomain: 'my-tenant',
         name: 'My Tenant',
@@ -245,6 +251,7 @@ describe('Domain Entities Unit Tests', () => {
       const customer = Customer.create({
         id: validUuid1,
         tenantId: validUuid2,
+        zoneId: validUuid3,
         userId: validUuid3,
         firstName: 'Juan',
         lastName: 'Perez',
@@ -269,6 +276,7 @@ describe('Domain Entities Unit Tests', () => {
       const customer = Customer.create({
         id: validUuid1,
         tenantId: validUuid2,
+        zoneId: validUuid3,
         userId: validUuid3,
         firstName: 'Juan',
         lastName: 'Perez',

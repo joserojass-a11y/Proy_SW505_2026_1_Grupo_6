@@ -2,6 +2,7 @@ export class CreateBookingRequestDto {
   tenantId!: string;
   branchId!: string;
   serviceId!: string;
+  resourceId!: string;
   customerId!: string;
   startsAt!: Date;
   endsAt!: Date;

@@ -5,7 +5,7 @@ import { GetCustomerProfileQuery } from './get-customer-profile.query';
 import { CustomerResponseDto } from '../commands/create-customer.command-handler';
 
 export class GetCustomerProfileQueryHandler {
-  constructor(private readonly customerRepository: CustomerRepository) {}
+  constructor(private readonly customerRepository: CustomerRepository) { }
 
   async execute(query: GetCustomerProfileQuery): Promise<CustomerResponseDto> {
     const customer = await this.customerRepository.findByUserId(UserId.create(query.userId));
@@ -19,6 +19,7 @@ export class GetCustomerProfileQueryHandler {
     return {
       id: primitives.id,
       tenantId: primitives.tenantId,
+      zoneId: primitives.zoneId,
       userId: primitives.userId,
       firstName: primitives.firstName,
       lastName: primitives.lastName,

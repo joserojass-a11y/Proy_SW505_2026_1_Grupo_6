@@ -8,14 +8,12 @@ import { ListBookingsQueryHandler } from '../../application/queries/list-booking
 import { INFRASTRUCTURE_TOKENS } from '../shared/infrastructure.tokens';
 import { TypeOrmBookingRepository } from '../persistence/typeorm/typeorm-booking.repository';
 import { BookingController } from './controllers/booking.controller';
+import { SlotController } from './controllers/slot.controller';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { Reflector } from '@nestjs/core';
 import { AvailabilityServiceMock } from '../services/availability-service.mock';
 import { IAvailabilityService } from '../../application/services/availability.interface';
 import { DatabaseModule } from '../shared/database.module';
-import { CustomersModule } from './customers.module';
-import { NotificationsModule } from './notifications.module';
-import { CreateNotificationCommandHandler } from '../../application/commands/create-notification.command-handler';
 
 const bookingRepositoryProvider: Provider = {
   provide: INFRASTRUCTURE_TOKENS.BOOKING_REPOSITORY,
@@ -33,23 +31,14 @@ const createBookingHandlerProvider: Provider = {
   useFactory: (
     bookingRepository: TypeOrmBookingRepository,
     availabilityService: IAvailabilityService,
-    customerRepository: any,
-    createNotificationHandler: any,
-    notificationOrchestrationService: any,
   ) =>
     new CreateBookingCommandHandler(
       bookingRepository,
       availabilityService,
-      customerRepository,
-      createNotificationHandler,
-      notificationOrchestrationService,
     ),
   inject: [
     INFRASTRUCTURE_TOKENS.BOOKING_REPOSITORY,
     INFRASTRUCTURE_TOKENS.AVAILABILITY_SERVICE,
-    INFRASTRUCTURE_TOKENS.CUSTOMER_REPOSITORY,
-    CreateNotificationCommandHandler,
-    INFRASTRUCTURE_TOKENS.NOTIFICATION_ORCHESTRATION_SERVICE,
   ],
 };
 
@@ -57,21 +46,12 @@ const cancelBookingHandlerProvider: Provider = {
   provide: CancelBookingCommandHandler,
   useFactory: (
     bookingRepository: TypeOrmBookingRepository,
-    customerRepository: any,
-    createNotificationHandler: any,
-    notificationOrchestrationService: any,
   ) =>
     new CancelBookingCommandHandler(
       bookingRepository,
-      customerRepository,
-      createNotificationHandler,
-      notificationOrchestrationService,
     ),
   inject: [
     INFRASTRUCTURE_TOKENS.BOOKING_REPOSITORY,
-    INFRASTRUCTURE_TOKENS.CUSTOMER_REPOSITORY,
-    CreateNotificationCommandHandler,
-    INFRASTRUCTURE_TOKENS.NOTIFICATION_ORCHESTRATION_SERVICE,
   ],
 };
 
@@ -80,23 +60,14 @@ const rescheduleBookingHandlerProvider: Provider = {
   useFactory: (
     bookingRepository: TypeOrmBookingRepository,
     availabilityService: IAvailabilityService,
-    customerRepository: any,
-    createNotificationHandler: any,
-    notificationOrchestrationService: any,
   ) =>
     new RescheduleBookingCommandHandler(
       bookingRepository,
       availabilityService,
-      customerRepository,
-      createNotificationHandler,
-      notificationOrchestrationService,
     ),
   inject: [
     INFRASTRUCTURE_TOKENS.BOOKING_REPOSITORY,
     INFRASTRUCTURE_TOKENS.AVAILABILITY_SERVICE,
-    INFRASTRUCTURE_TOKENS.CUSTOMER_REPOSITORY,
-    CreateNotificationCommandHandler,
-    INFRASTRUCTURE_TOKENS.NOTIFICATION_ORCHESTRATION_SERVICE,
   ],
 };
 
@@ -113,8 +84,8 @@ const listBookingsHandlerProvider: Provider = {
 };
 
 @Module({
-  imports: [DatabaseModule, CustomersModule, NotificationsModule],
-  controllers: [BookingController],
+  imports: [DatabaseModule],
+  controllers: [BookingController, SlotController],
   providers: [
     bookingRepositoryProvider,
     availabilityServiceProvider,

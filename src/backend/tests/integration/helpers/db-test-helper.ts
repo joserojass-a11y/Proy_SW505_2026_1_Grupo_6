@@ -10,6 +10,9 @@ import { TypeOrmBookingEntitySchema } from '../../../src/infrastructure/persiste
 import { TypeOrmBookingStatusHistoryEntitySchema } from '../../../src/infrastructure/persistence/typeorm/entities/typeorm-booking-status-history.entity';
 import { TypeOrmBookingRescheduleEntitySchema } from '../../../src/infrastructure/persistence/typeorm/entities/typeorm-booking-reschedule.entity';
 import { TypeOrmBookingCancellationEntitySchema } from '../../../src/infrastructure/persistence/typeorm/entities/typeorm-booking-cancellation.entity';
+import { TypeOrmScheduleSlotEntitySchema } from '../../../src/infrastructure/persistence/typeorm/entities/typeorm-schedule-slot.entity';
+import { TypeOrmNotificationEventEntitySchema } from '../../../src/infrastructure/persistence/typeorm/entities/typeorm-notification-event.entity';
+import { TypeOrmNotificationPreferenceEntitySchema } from '../../../src/infrastructure/persistence/typeorm/entities/typeorm-notification-preference.entity';
 import * as path from 'path';
 
 let container: StartedPostgreSqlContainer | null = null;
@@ -104,6 +107,9 @@ export async function startTestDatabase(): Promise<DataSource> {
       TypeOrmBookingStatusHistoryEntitySchema,
       TypeOrmBookingRescheduleEntitySchema,
       TypeOrmBookingCancellationEntitySchema,
+      TypeOrmScheduleSlotEntitySchema,
+      TypeOrmNotificationEventEntitySchema,
+      TypeOrmNotificationPreferenceEntitySchema,
     ],
     migrations: [
       path.resolve(__dirname, '../../../src/infrastructure/persistence/typeorm/migrations/*.ts'),
@@ -114,6 +120,75 @@ export async function startTestDatabase(): Promise<DataSource> {
   });
 
   await dataSource.initialize();
+
+  // Crear tablas de notificaciones adicionales si no existen
+  await dataSource.query(`
+    CREATE TABLE IF NOT EXISTS "notification_channels" (
+        "id" uuid NOT NULL DEFAULT gen_random_uuid(),
+        "tenant_id" uuid,
+        "code" character varying(50) NOT NULL,
+        "name" character varying(100) NOT NULL,
+        "description" character varying(500),
+        "is_active" boolean NOT NULL DEFAULT true,
+        "config" jsonb NOT NULL DEFAULT '{}'::jsonb,
+        "created_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+        "updated_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+        CONSTRAINT "PK_notification_channels_id" PRIMARY KEY ("id"),
+        CONSTRAINT "UQ_notification_channels_code" UNIQUE ("code"),
+        CONSTRAINT "UQ_notification_channels_code_tenant" UNIQUE ("code", "tenant_id")
+    );
+  `);
+
+  await dataSource.query(`
+    CREATE TABLE IF NOT EXISTS "notification_topics" (
+        "id" uuid NOT NULL DEFAULT gen_random_uuid(),
+        "tenant_id" uuid,
+        "code" character varying(100) NOT NULL,
+        "name" character varying(150) NOT NULL,
+        "description" character varying(500),
+        "is_mandatory" boolean NOT NULL DEFAULT false,
+        "is_active" boolean NOT NULL DEFAULT true,
+        "created_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+        "updated_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+        CONSTRAINT "PK_notification_topics_id" PRIMARY KEY ("id"),
+        CONSTRAINT "UQ_notification_topics_code_tenant" UNIQUE ("code", "tenant_id")
+    );
+  `);
+
+  await dataSource.query(`
+    CREATE TABLE IF NOT EXISTS "notification_templates" (
+        "id" uuid NOT NULL DEFAULT gen_random_uuid(),
+        "tenant_id" uuid NOT NULL,
+        "trigger_event" character varying(100) NOT NULL,
+        "recipient_role" character varying(20) NOT NULL,
+        "channel_code" character varying(50) NOT NULL,
+        "subject" character varying(255),
+        "content_template" text NOT NULL,
+        "is_active" boolean NOT NULL DEFAULT true,
+        "created_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+        "updated_at" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+        CONSTRAINT "PK_notification_templates_id" PRIMARY KEY ("id")
+    );
+  `);
+
+  // Seed data
+  await dataSource.query(`
+    INSERT INTO "notification_channels" ("code", "name", "description", "is_active", "tenant_id")
+    VALUES ('email', 'Correo Electrónico', 'Envíos de notificaciones por correo SMTP', true, NULL)
+    ON CONFLICT DO NOTHING;
+  `);
+
+  await dataSource.query(`
+    INSERT INTO "notification_topics" ("code", "name", "description", "is_mandatory", "tenant_id")
+    VALUES 
+        ('booking_confirmed', 'Confirmación de Reserva', 'Notificación cuando una cita es confirmada', true, NULL),
+        ('booking_cancelled', 'Cancelación de Reserva', 'Notificación cuando una cita es cancelada', true, NULL),
+        ('booking_rescheduled', 'Reprogramación de Reserva', 'Notificación cuando una cita es reprogramada', true, NULL),
+        ('reminder_24h', 'Recordatorio 24 horas', 'Recordatorio de cita 24 horas antes', false, NULL),
+        ('reminder_1h', 'Recordatorio 1 hora', 'Recordatorio de cita 1 hora antes', false, NULL)
+    ON CONFLICT DO NOTHING;
+  `);
+
   return dataSource;
 }
 
@@ -133,6 +208,6 @@ export async function clearDatabase(ds: DataSource): Promise<void> {
   const entities = ds.entityMetadatas;
   const tableNames = entities.map((entity) => `"${entity.tableName}"`).join(', ');
   if (tableNames.length > 0) {
-    await ds.query(`TRUNCATE TABLE ${tableNames} RESTART IDENTITY CASCADE;`);
+    await ds.query(`TRUNCATE TABLE ${tableNames}, "notification_templates" RESTART IDENTITY CASCADE;`);
   }
 }

@@ -26,9 +26,14 @@ export class Rs256JwtTokenGeneratorService implements IJwtTokenGenerator {
     const signOptions: jwt.SignOptions = {
       algorithm: 'RS256',
       expiresIn: expiresIn as jwt.SignOptions['expiresIn'],
-      issuer,
-      audience,
     };
+
+    if (issuer) {
+      signOptions.issuer = issuer;
+    }
+    if (audience) {
+      signOptions.audience = audience;
+    }
 
     return jwt.sign(payload, privateKey, signOptions);
   }

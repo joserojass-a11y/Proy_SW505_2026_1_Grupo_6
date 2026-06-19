@@ -13,6 +13,7 @@ import { CreateCustomerCommand } from './create-customer.command';
 export interface CustomerResponseDto {
   id: string;
   tenantId: string;
+  zoneId: string;
   userId: string;
   firstName: string;
   lastName: string;
@@ -48,7 +49,8 @@ export class CreateCustomerCommandHandler {
 
     const customer = Customer.create({
       id: CustomerId.create(randomUUID()),
-      tenantId,
+      tenantId: tenantId,
+      zoneId: command.zoneId,
       userId,
       firstName: command.firstName,
       lastName: command.lastName,
@@ -69,6 +71,7 @@ export class CreateCustomerCommandHandler {
     return {
       id: primitives.id,
       tenantId: primitives.tenantId,
+      zoneId: primitives.zoneId,
       userId: primitives.userId,
       firstName: primitives.firstName,
       lastName: primitives.lastName,

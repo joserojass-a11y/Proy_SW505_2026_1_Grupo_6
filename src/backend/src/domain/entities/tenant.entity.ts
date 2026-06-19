@@ -1,10 +1,12 @@
 import { TenantId } from '../value-objects/tenant-id.vo';
 import { UserId } from '../value-objects/user-id.vo';
+import { ZoneId } from '../value-objects/zone-id.vo';
 
 export type TenantStatus = 'ACTIVE' | 'SUSPENDED' | 'TRIAL_EXPIRED';
 
 export interface TenantPrimitives {
   id: string;
+  zoneId: string;
   countryCode: string;
   status: TenantStatus;
   subdomain: string;
@@ -17,6 +19,7 @@ export interface TenantPrimitives {
 
 export interface CreateTenantProps {
   id?: TenantId | string;
+  zoneId: ZoneId | string;
   countryCode: string;
   status?: TenantStatus;
   subdomain: string;
@@ -29,6 +32,7 @@ export interface CreateTenantProps {
 
 export interface ReconstituteTenantProps {
   id: TenantId | string;
+  zoneId: ZoneId | string;
   countryCode: string;
   status: TenantStatus;
   subdomain: string;
@@ -42,6 +46,7 @@ export interface ReconstituteTenantProps {
 export class Tenant {
   private constructor(
     private _id: TenantId,
+    private _zoneId: ZoneId,
     private _countryCode: string,
     private _status: TenantStatus,
     private _subdomain: string,
@@ -55,6 +60,7 @@ export class Tenant {
   static create(props: CreateTenantProps): Tenant {
     return new Tenant(
       Tenant.toTenantId(props.id),
+      Tenant.toZoneId(props.zoneId),
       Tenant.normalizeCountryCode(props.countryCode),
       props.status ?? 'ACTIVE',
       Tenant.normalizeSubdomain(props.subdomain),
@@ -69,6 +75,7 @@ export class Tenant {
   static reconstitute(props: ReconstituteTenantProps): Tenant {
     return new Tenant(
       Tenant.toTenantId(props.id),
+      Tenant.toZoneId(props.zoneId),
       Tenant.normalizeCountryCode(props.countryCode),
       props.status,
       Tenant.normalizeSubdomain(props.subdomain),
@@ -81,6 +88,7 @@ export class Tenant {
   }
 
   get id(): TenantId { return this._id; }
+  get zoneId(): ZoneId { return this._zoneId; }
   get countryCode(): string { return this._countryCode; }
   get status(): TenantStatus { return this._status; }
   get subdomain(): string { return this._subdomain; }
@@ -99,6 +107,7 @@ export class Tenant {
   toPrimitives(): TenantPrimitives {
     return {
       id: this._id.value,
+      zoneId: this._zoneId.value,
       countryCode: this._countryCode,
       status: this._status,
       subdomain: this._subdomain,
@@ -113,6 +122,10 @@ export class Tenant {
   private static toTenantId(value: TenantId | string | undefined): TenantId {
     if (!value) throw new Error('Tenant id is required');
     return value instanceof TenantId ? value : TenantId.create(value);
+  }
+
+  private static toZoneId(value: ZoneId | string): ZoneId {
+    return value instanceof ZoneId ? value : ZoneId.create(value);
   }
 
   private static toUserId(value: UserId | string): UserId {

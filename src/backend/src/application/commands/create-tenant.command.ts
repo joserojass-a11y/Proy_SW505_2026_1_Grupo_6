@@ -1,5 +1,6 @@
 export interface CreateTenantCommand {
   ownerUserId: string;
+  zoneId: string;
   countryCode: string;
   subdomain: string;
   name: string;

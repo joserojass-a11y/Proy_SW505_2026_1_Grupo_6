@@ -3,6 +3,7 @@ import { EntitySchema } from 'typeorm';
 export interface TypeOrmCustomerProps {
   id: string;
   tenantId: string;
+  zoneId: string;
   userId: string;
   firstName: string;
   lastName: string;
@@ -18,6 +19,7 @@ export interface TypeOrmCustomerProps {
 export class TypeOrmCustomerEntity implements TypeOrmCustomerProps {
   id!: string;
   tenantId!: string;
+  zoneId!: string;
   userId!: string;
   firstName!: string;
   lastName!: string;
@@ -45,6 +47,11 @@ export const TypeOrmCustomerEntitySchema = new EntitySchema<TypeOrmCustomerEntit
     tenantId: {
       type: 'uuid',
       name: 'tenant_id',
+    },
+    zoneId: {
+      type: 'uuid',
+      name: 'zone_id',
+      nullable: true,
     },
     userId: {
       type: 'uuid',

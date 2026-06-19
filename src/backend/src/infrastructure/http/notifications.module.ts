@@ -16,6 +16,11 @@ import { GetPendingNotificationsQueryHandler } from '../../application/queries/g
 import { GetCustomerPreferencesQueryHandler } from '../../application/queries/get-customer-preferences.query-handler';
 import { GetNotificationHistoryQueryHandler } from '../../application/queries/get-notification-history.query-handler';
 import { BookingReminderSchedulerService } from '../services/booking-reminder-scheduler.service';
+import { CustomersModule } from './customers.module';
+import { BookingNotificationSubscriber } from '../services/booking-notification-subscriber.service';
+import { NotificationsController } from './controllers/notifications.controller';
+
+
 
 /**
  * Provider: NotificationEventRepository
@@ -155,7 +160,8 @@ const notificationOrchestrationServiceProvider: Provider = {
  * - Handlers CQS (Commands/Queries)
  */
 @Module({
-  imports: [DatabaseModule],
+  imports: [DatabaseModule, CustomersModule],
+  controllers: [NotificationsController],
   providers: [
     // Repositories
     notificationEventRepositoryProvider,
@@ -176,6 +182,7 @@ const notificationOrchestrationServiceProvider: Provider = {
     // Orchestration Service
     notificationOrchestrationServiceProvider,
     BookingReminderSchedulerService,
+    BookingNotificationSubscriber,
   ],
   exports: [
     INFRASTRUCTURE_TOKENS.NOTIFICATION_EVENT_REPOSITORY,

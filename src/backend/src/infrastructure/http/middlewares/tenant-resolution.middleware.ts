@@ -1,7 +1,8 @@
-import { Injectable, NestMiddleware } from '@nestjs/common';
+import { Injectable, NestMiddleware, Inject } from '@nestjs/common';
 import { Request, Response, NextFunction } from 'express';
 import { DataSource } from 'typeorm';
 import { TypeOrmTenantEntity } from '../../persistence/typeorm/entities/typeorm-tenant.entity';
+import { INFRASTRUCTURE_TOKENS } from '../../shared/infrastructure.tokens';
 
 type TenantAwareRequest = Request & {
   tenant?: {
@@ -25,7 +26,7 @@ function extractSubdomain(hostname: string): string | null {
 
 @Injectable()
 export class TenantResolutionMiddleware implements NestMiddleware {
-  constructor(private readonly dataSource: DataSource) {}
+  constructor(@Inject(INFRASTRUCTURE_TOKENS.DATA_SOURCE) private readonly dataSource: DataSource) {}
 
   async use(request: TenantAwareRequest, _response: Response, next: NextFunction): Promise<void> {
     const subdomain = extractSubdomain(request.hostname);

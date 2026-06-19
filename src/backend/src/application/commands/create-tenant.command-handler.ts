@@ -27,7 +27,7 @@ export class CreateTenantCommandHandler {
     private readonly tenantRepository: TenantRepository,
     private readonly userRepository: UserRepository,
     private readonly tenantBillingProfileRepository: TenantBillingProfileRepository,
-  ) {}
+  ) { }
 
   async execute(command: CreateTenantCommand): Promise<TenantResponseDto> {
     const ownerUserId = UserId.create(command.ownerUserId);
@@ -48,6 +48,7 @@ export class CreateTenantCommandHandler {
 
     const tenant = Tenant.create({
       id: TenantId.create(randomUUID()),
+      zoneId: command.zoneId,
       ownerUserId,
       countryCode: command.countryCode,
       subdomain: command.subdomain,

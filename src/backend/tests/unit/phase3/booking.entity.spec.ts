@@ -3,6 +3,7 @@ import { BookingId } from '../../../src/domain/value-objects/booking-id.vo';
 import { BranchId } from '../../../src/domain/value-objects/branch-id.vo';
 import { CustomerId } from '../../../src/domain/value-objects/customer-id.vo';
 import { ServiceId } from '../../../src/domain/value-objects/service-id.vo';
+import { ResourceId } from '../../../src/domain/value-objects/resource-id.vo';
 import { TenantId } from '../../../src/domain/value-objects/tenant-id.vo';
 import { UserId } from '../../../src/domain/value-objects/user-id.vo';
 import { InvalidBookingDateRangeException } from '../../../src/domain/exceptions/invalid-booking-date-range.exception';
@@ -18,6 +19,7 @@ describe('Booking Entity', () => {
       tenantId: TenantId.create('123e4567-e89b-12d3-a456-426614174001'),
       branchId: BranchId.create('123e4567-e89b-12d3-a456-426614174002'),
       serviceId: ServiceId.create('123e4567-e89b-12d3-a456-426614174003'),
+      resourceId: ResourceId.create('123e4567-e89b-12d3-a456-426614174099'),
       customerId: CustomerId.create('123e4567-e89b-12d3-a456-426614174004'),
       startsAt: now,
       endsAt: oneHourLater,
@@ -47,6 +49,7 @@ describe('Booking Entity', () => {
           tenantId: TenantId.create('123e4567-e89b-12d3-a456-426614174001'),
           branchId: BranchId.create('123e4567-e89b-12d3-a456-426614174002'),
           serviceId: ServiceId.create('123e4567-e89b-12d3-a456-426614174003'),
+          resourceId: ResourceId.create('123e4567-e89b-12d3-a456-426614174099'),
           customerId: CustomerId.create('123e4567-e89b-12d3-a456-426614174004'),
           startsAt: now,
           endsAt: now, // Same as startsAt - invalid!
@@ -213,6 +216,7 @@ describe('Booking Entity', () => {
         tenantId: TenantId.create('123e4567-e89b-12d3-a456-426614174001'),
         branchId: BranchId.create('123e4567-e89b-12d3-a456-426614174002'),
         serviceId: ServiceId.create('123e4567-e89b-12d3-a456-426614174003'),
+        resourceId: ResourceId.create('123e4567-e89b-12d3-a456-426614174099'),
         customerId: CustomerId.create('123e4567-e89b-12d3-a456-426614174004'),
         startsAt: now,
         endsAt: oneHourLater,
