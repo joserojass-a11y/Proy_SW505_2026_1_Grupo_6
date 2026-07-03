@@ -5,6 +5,10 @@ import LoginRegister from '../features/auth/components/LoginRegister';
 import ProfilePage from '../features/profile/components/ProfilePage';
 import ConfigPage from '../features/booking/components/ConfigPage';
 import BookingsPage from '../features/booking/components/BookingsPage';
+import ServiceSearchPage from '../features/search/components/ServiceSearchPage';
+import CreateServiceOptions from '../features/services/components/CreateServiceOptions';
+import CreateServiceIndependent from '../features/services/components/CreateServiceIndependent';
+import CreateServiceCompany from '../features/services/components/CreateServiceCompany';
 import useAppStore from '../store/useAppStore';
 
 // Componente para proteger rutas privadas
@@ -36,9 +40,41 @@ export default function AppRouter() {
   return (
     <BrowserRouter>
       <Routes>
+        {/* Root layout always lands on public explorer */}
         <Route path="/" element={<Layout />}>
+          {/* Public Home Page */}
+          <Route index element={<ServiceSearchPage />} />
+          <Route path="home" element={<Navigate to="/" replace />} />
+
+          {/* Create Service Routes (Protected) */}
+          <Route
+            path="create-service"
+            element={
+              <ProtectedRoute>
+                <CreateServiceOptions />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="create-service/independent"
+            element={
+              <ProtectedRoute>
+                <CreateServiceIndependent />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="create-service/company"
+            element={
+              <ProtectedRoute>
+                <CreateServiceCompany />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Protected Routes */}
           <Route 
-            index 
+            path="profile" 
             element={
               <ProtectedRoute>
                 <ProfilePage />
@@ -69,6 +105,7 @@ export default function AppRouter() {
               </GuestRoute>
             } 
           />
+          <Route path="login" element={<Navigate to="/auth" replace />} />
           {/* Redirección por defecto para cualquier otra ruta */}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Route>

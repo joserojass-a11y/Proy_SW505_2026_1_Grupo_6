@@ -26,15 +26,21 @@ function Layout() {
           <i className="fa-solid fa-calendar-check logo-icon"></i>
           <div>
             <h1 className="logo-text">UNI Booking Platform</h1>
-            <p className="logo-subtext">Panel de Pruebas e Integración de Notificaciones (CQS)</p>
+            <p className="logo-subtext">Sistema de Reserva de Servicios</p>
           </div>
         </div>
-        {token && (
+        {token ? (
           <div className="user-info">
             <span className="user-badge">{role}</span>
             <span className="user-email">{email}</span>
             <button onClick={handleLogout} className="logout-btn">
               <i className="fa-solid fa-right-from-bracket"></i> Salir
+            </button>
+          </div>
+        ) : (
+          <div className="user-info">
+            <button onClick={() => navigate('/auth')} className="btn-primary" style={{padding: '8px 16px', fontSize: '14px'}}>
+              Iniciar Sesión / Registrarse
             </button>
           </div>
         )}
@@ -56,7 +62,7 @@ function Layout() {
       {token && (
         <nav className="tabs-container">
           <NavLink 
-            to="/" 
+            to="/profile" 
             className={({ isActive }) => `tab-btn ${isActive ? 'active' : ''}`}
           >
             <i className="fa-solid fa-user-gear"></i> Perfiles y Cuentas
